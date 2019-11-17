@@ -1,15 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <iostream>
-#include <ctime>
-#include <stdlib.h>
-
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
+#include "GameState.h"
 
 class Game
 {
@@ -20,9 +12,15 @@ private:
 	
 	sf::Clock dtClock;
 	float dt;
+	sf::Vector2f mousePos;
+	std::vector<sf::CircleShape> listOfShapes;
+	
 
+
+	std::stack<State*> states;
 	//initialization
 	void initWindow();
+	void initStates();
 
 public:
 	//constructor/destructor

@@ -13,9 +13,13 @@ private:
 	sf::Clock dtClock;
 	float dt;
 	sf::Vector2f mousePos;
-	std::vector<sf::CircleShape> listOfShapes;
+	std::vector<sf::CircleShape> listOfCircles;
 	
+	sf::Texture bluPaddle;
+	sf::Texture redPaddle;
 
+	sf::Sprite myPaddle;
+	sf::Sprite enemyPaddle;
 
 	std::stack<State*> states;
 	//initialization

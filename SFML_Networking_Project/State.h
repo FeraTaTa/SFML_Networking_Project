@@ -17,6 +17,7 @@
 #include <SFML/Network.hpp>
 #include <SFML/Window/Mouse.hpp>
 
+#include "NetworkProtocol.h"
 
 class State
 {

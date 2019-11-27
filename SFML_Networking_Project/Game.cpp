@@ -32,7 +32,6 @@ void Game::initStates()
 
 //constructors/destructors
 
-
 Game::Game()
 {
 	this->initWindow();
@@ -41,7 +40,6 @@ Game::Game()
 
 	
 }
-
 
 Game::~Game()
 {
@@ -57,7 +55,7 @@ Game::~Game()
 void Game::updateDT()
 {
 	//updates the dt variable with the time it takes to update and render one frame
-	this->dt = this->dtClock.restart().asSeconds();
+	this->dt = this->dtClock.restart();
 	//system("cls");
 	//std::cout << this->dt << std::endl;
 }
@@ -89,6 +87,14 @@ void Game::update()
 	//	}*/
 	//}
 }
+void Game::setEnemyPaddlePosition(sf::Vector2f position) {
+	
+	enemyPaddle.setPosition(position.x, position.y);
+}
+
+sf::Vector2f Game::getMyPaddlePositon() {
+	return myPaddle.getPosition();
+}
 
 void Game::render()
 {
@@ -108,39 +114,9 @@ void Game::render()
 
 void Game::run()
 {
-	//setup ball
-	sf::CircleShape ball(100.f);
-	ball.setFillColor(sf::Color::Green);
-	listOfCircles.push_back(ball);
-	//defined by the 32x32 sprite which is scaled up 10x
-	sf::IntRect cropShape(30, 90, 260, 140);
-	//			  x start, y start, x length, y length
-	sf::Color translucent = sf::Color(255, 255, 255, 180);
-	//sf::Color translucent = sf::Color(255, 0, 0, 180);
-	//setup player paddle
-	if (!bluPaddle.loadFromFile("Resources/bluPaddle.png")) {
-		std::cout << "failed to load sprite" <<std::endl;
-	}
-	myPaddle.setTexture(bluPaddle);
-	myPaddle.setTextureRect(cropShape);
-	//change the origin of the paddle to be (0,0)
-	sf::Vector2i bluSpriteSize (cropShape.width,cropShape.height);
-	myPaddle.setOrigin((bluSpriteSize.x / 2), (bluSpriteSize.y / 2));
-	myPaddle.setColor(translucent);
-
-	//setup enemy paddle
-	if (!redPaddle.loadFromFile("Resources/redPaddle.png")) {
-		std::cout << "failed to load sprite" <<std::endl;
-	}
-	enemyPaddle.setTexture(redPaddle);
-	enemyPaddle.setTextureRect(cropShape);
-	//change the origin of the paddle to be (0,0)
-	sf::Vector2i redSpriteSize(cropShape.width, cropShape.height);
-	enemyPaddle.setOrigin(redSpriteSize.x / 2,redSpriteSize.y / 2);
-	//set paddle position to the centre of the window
-	sf::Vector2f windowSize = (sf::Vector2f)this->window->getSize();
-	enemyPaddle.setPosition(windowSize.x / 2, windowSize.y / 2);
-	enemyPaddle.setColor(translucent);
+	setupGameObjects();
+	selectNetworkState();
+	startNetwork();
 
 	//main loop
 	while (this->window->isOpen())
@@ -148,5 +124,92 @@ void Game::run()
 		this->updateDT();
 		this->update();
 		this->render();
+		if (isHost) {
+			//server loop is other thread
+			
+		}
+		else {
+			//client loop
+			mGameClient->update(dt);
+		}
 	}
+}
+
+void Game::selectNetworkState()
+{
+	std::string netState;
+	std::cout << "Are you the server (S/s) or the Client (C/c)? \n";
+	do {
+		netState.clear();
+		std::cin >> netState;
+		if (netState == "s" || netState == "S") {
+			isHost = true;
+			break;
+		}
+		else if (netState == "c" || netState == "C") {
+			isHost = false;
+			break;
+		}
+		std::cout << "Invalid input, try again. \n";
+	} while (true);
+	std::cout << netState << " " << "Server = "<< std::boolalpha << isHost << std::noboolalpha << std::endl;
+}
+
+void Game::startNetwork()
+{
+	sf::IpAddress ip;
+	if (isHost) {
+		//start server thread
+		//myPaddle = serverpaddle - pass this info
+		//enemypaddle = client paddle
+		ip = "127.0.0.1";
+		mGameServer.reset(new Server(ip, ServerPort, window->getSize(), *this));
+	}
+	else {
+		//start client thread
+		//myPaddle = client paddle - pass this info
+		//enemypaddle = serverpaddle
+		ip = "127.0.0.1";
+		mGameClient.reset(new Client(ip, ServerPort, *this));
+	}
+	
+}
+
+void Game::setupGameObjects()
+{
+	//setup ball
+	sf::CircleShape ball(100.f);
+	ball.setFillColor(sf::Color::Green);
+	listOfCircles.push_back(ball);
+
+
+	//paddles defined by the 32x32 sprite which is scaled up 10x
+	sf::IntRect cropShape(30, 90, 260, 140);
+	//			  x start, y start, x length, y length
+	sf::Color translucent = sf::Color(255, 255, 255, 180);
+
+	//setup player paddle
+	if (!bluPaddle.loadFromFile("Resources/bluPaddle.png")) {
+		std::cout << "failed to load sprite" << std::endl;
+	}
+	myPaddle.setTexture(bluPaddle);
+	myPaddle.setTextureRect(cropShape);
+	//change the origin of the paddle to be (0,0)
+	sf::Vector2f bluSpriteSize(cropShape.width, cropShape.height);
+	myPaddle.setOrigin((bluSpriteSize.x / 2), (bluSpriteSize.y / 2));
+	myPaddle.setColor(translucent);
+
+	//setup enemy paddle
+	if (!redPaddle.loadFromFile("Resources/redPaddle.png")) {
+		std::cout << "failed to load sprite" << std::endl;
+	}
+	enemyPaddle.setTexture(redPaddle);
+	enemyPaddle.setTextureRect(cropShape);
+	//change the origin of the paddle to be (0,0)
+	sf::Vector2i redSpriteSize(cropShape.width, cropShape.height);
+	enemyPaddle.setOrigin(redSpriteSize.x / 2, redSpriteSize.y / 2);
+	//set paddle position to the centre of the window
+	sf::Vector2f windowSize = (sf::Vector2f)this->window->getSize();
+	enemyPaddle.setPosition(windowSize.x / 2, windowSize.y / 2);
+	enemyPaddle.setColor(translucent);
 }

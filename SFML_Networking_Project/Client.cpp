@@ -3,7 +3,9 @@
 
 Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game):
 	mClientTimeout(sf::seconds(2.f)),
-	mTimeSinceLastPacket(sf::seconds(0.f))/*,
+	mTimeSinceLastPacket(sf::seconds(0.f))//,
+	//mThread(&Client::readNetPacket,this)
+	/*,
 	world(&game)*/
 {
 	world = &game;
@@ -188,14 +190,16 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 
 			//for (sf::Int32 i = 0; i < aircraftCount; ++i)
 			//{
-				sf::Vector2f paddlePosition;
+				sf::Vector2f paddlePositionUpdate;
 
 				//sf::Int32 aircraftIdentifier;
-				packet >> paddlePosition.x >> paddlePosition.y;
-				world->setEnemyPaddlePosition(paddlePosition);
-
-				std::cout << "Recieved position" << std::endl;
-				std::cout << paddlePosition.x << " " << paddlePosition.y << std::endl;
+				packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
+				sf::Vector2f currentPaddlePos(world->getMyPaddlePositon());
+				sf::Vector2f interpolatedPosition = currentPaddlePos + (paddlePositionUpdate - currentPaddlePos) * 0.1f;
+				
+				world->setEnemyPaddlePosition(interpolatedPosition);
+				//std::cout << "Recieved position" << std::endl;
+				//std::cout << paddlePosition.x << " " << paddlePosition.y << std::endl;
 
 				/*world.setEnemyPaddlePosition(paddlePosition);*/
 				//Aircraft* aircraft = mWorld.getAircraft(aircraftIdentifier);
@@ -268,19 +272,19 @@ bool Client::update(sf::Time dt)
 			packet >> packetType;
 			handlePacket(packetType, packet);
 		}
-		else
-		{
-			// Check for timeout with the server
-			if (mTimeSinceLastPacket > mClientTimeout)
-			{
-				mConnected = false;
+		//else
+		//{
+		//	// Check for timeout with the server
+		//	if (mTimeSinceLastPacket > mClientTimeout)
+		//	{
+		//		mConnected = false;
 
-				//mFailedConnectionText.setString("Lost connection to server");
-				//centerOrigin(mFailedConnectionText);
+		//		//mFailedConnectionText.setString("Lost connection to server");
+		//		//centerOrigin(mFailedConnectionText);
 
-				//mFailedConnectionClock.restart();
-			}
-		}
+		//		//mFailedConnectionClock.restart();
+		//	}
+		//}
 
 		//updateBroadcastMessage(dt);
 
@@ -312,7 +316,8 @@ bool Client::update(sf::Time dt)
 			//FOREACH(sf::Int32 identifier, mLocalPlayerIdentifiers)
 			//{
 				//if (Aircraft* aircraft = mWorld.getAircraft(identifier))
-					positionUpdatePacket << serverPaddle.position.x << serverPaddle.position.y;
+			sf::Vector2f paddlePos(world->getMyPaddlePositon());
+					positionUpdatePacket << paddlePos.x << paddlePos.y;
 			//}
 					//std::cout << "sending position" << std::endl;
 					//std::cout << serverPaddle.position.x << " " <<serverPaddle.position.y << std::endl;

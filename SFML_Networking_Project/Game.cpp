@@ -72,24 +72,120 @@ void Game::updateSFMLEvents()
 
 void Game::update()
 {
+	std::cout << "Game update loop" << std::endl;
+	std::cout << std::boolalpha << isBallPaddleCollision() <<std::noboolalpha << std::endl;
 	this->updateSFMLEvents();
 	mousePos = (sf::Vector2f)sf::Mouse::getPosition(*(this->window));
-	//listOfCircles[0].setPosition(mousePos.x-listOfCircles[0].getRadius(), mousePos.y - listOfCircles[0].getRadius());
-	myPaddle.setPosition(mousePos.x, mousePos.y);
-	//std::cout << "position set to: x" << mousePos.x << " y" << mousePos.y << std::endl;
-	
-	//if (!this->states.empty()) {
-	//	this->states.top()->update(this->dt);
+	int paddleHeight = myPaddle.getTextureRect().height;
+	int paddleWidth = myPaddle.getTextureRect().width;
+	sf::Vector2u windowSize = window->getSize();
 
-	//	/*if (this->states.top()->getQuit()) {
-	//		delete this->states.top();
-	//		this->states.pop();
-	//	}*/
-	//}
-}
-void Game::setEnemyPaddlePosition(sf::Vector2f position) {
+	sf::Vector2f postoMove;
+
+	if (mousePos.x + paddleWidth / 2 > windowSize.x) {
+		postoMove.x = windowSize.x - paddleWidth/2;
+	}
+	else if (mousePos.x - paddleWidth / 2 < 0) {
+		postoMove.x = paddleWidth / 2;
+	}
+	else {
+		postoMove.x = mousePos.x;
+	}	
 	
-	enemyPaddle.setPosition(position.x, position.y);
+
+	if (mousePos.y + paddleHeight / 2 > windowSize.y) {
+		postoMove.y = windowSize.y - paddleHeight / 2;
+	}
+	else if (mousePos.y - paddleHeight / 2 < 0) {
+		postoMove.y = paddleHeight / 2;
+	}
+	else {
+		postoMove.y = mousePos.y;
+	}
+	
+
+	//is it the beginning of a round and the player clicked the ball to start the round
+	if (ballObj->isIdle && playerClicked) {
+		if (isBallPaddleCollision()) {
+			ballObj->startMove();
+		}
+	}
+
+
+	myPaddle.setPosition(postoMove.x, postoMove.y);
+	std::cout << enemyPaddlePosition.x << enemyPaddlePosition.y << std::endl;
+	enemyPaddle.setPosition(Interpolate(enemyPaddle.getPosition(),enemyPaddlePosition, dt.asSeconds() * PADDLESPEED));
+	//BALL UPDATE
+	ballObj->update(dt);
+
+	//if the ball is moving
+	if (!ballObj->isIdle) {
+		//does my paddle collide with the ball when it reaches my paddle
+		if (isBallPaddleCollision()  && ballObj->zDepth == myDepth) {
+			//hit the ball and change it's direction
+			ballObj->toggleDirection();
+		}
+		//if the ball reaches 100 server scored a point and server gets to start
+		//spawn ball in front of server
+		//if the ball reaches 0 client scored a point
+		//spawn ball in front of client
+		
+		
+	}
+}
+
+sf::Vector2f Game::Interpolate(const sf::Vector2f& pointA,const sf::Vector2f& pointB,	float factor) {
+	if (factor > 1.f)
+		factor = 1.f;
+
+	else if (factor < 0.f)
+		factor = 0.f;
+
+	return pointA + (pointB - pointA) * factor;
+}
+
+bool Game::isBallPaddleCollision()
+{
+	sf::FloatRect ballRect = gameBall->getGlobalBounds();
+	return myPaddle.getGlobalBounds().intersects(ballRect);
+}
+
+void Game::setEnemyPaddlePosition(sf::Vector2f position) {
+	int paddleHeight = enemyPaddle.getTextureRect().height;
+	int paddleWidth = enemyPaddle.getTextureRect().width;
+	sf::Vector2u windowSize = window->getSize();
+
+	sf::Vector2f postoMove;
+
+	if (position.x + paddleWidth / 2 > windowSize.x) {
+		postoMove.x = windowSize.x - paddleWidth / 2;
+	}
+	else if (position.x - paddleWidth / 2 < 0) {
+		postoMove.x = paddleWidth / 2;
+	}
+	else {
+		postoMove.x = position.x;
+	}
+
+
+	if (position.y + paddleHeight / 2 > windowSize.y) {
+		postoMove.y = windowSize.y - paddleHeight / 2;
+	}
+	else if (position.y - paddleHeight / 2 < 0) {
+		postoMove.y = paddleHeight / 2;
+	}
+	else {
+		postoMove.y = position.y;
+	}
+	enemyPaddlePosition.x = windowSize.x - postoMove.x;
+	enemyPaddlePosition.y = postoMove.y;
+
+
+}
+
+sf::Vector2f Game::getEnemyPaddlePosition() {
+
+	return enemyPaddle.getPosition();
 }
 
 sf::Vector2f Game::getMyPaddlePositon() {
@@ -162,14 +258,18 @@ void Game::startNetwork()
 		//start server thread
 		//myPaddle = serverpaddle - pass this info
 		//enemypaddle = client paddle
+		window->setTitle("Server");
 		ip = "127.0.0.1";
+		myDepth = SERVERDEPTH;
 		mGameServer.reset(new Server(ip, ServerPort, window->getSize(), *this));
 	}
 	else {
 		//start client thread
 		//myPaddle = client paddle - pass this info
 		//enemypaddle = serverpaddle
+		window->setTitle("Client");
 		ip = "127.0.0.1";
+		myDepth = CLIENTDEPTH;
 		mGameClient.reset(new Client(ip, ServerPort, *this));
 	}
 	
@@ -197,8 +297,9 @@ void Game::setupGameObjects()
 	//change the origin of the paddle to be (0,0)
 	sf::Vector2f bluSpriteSize(cropShape.width, cropShape.height);
 	myPaddle.setOrigin((bluSpriteSize.x / 2), (bluSpriteSize.y / 2));
+	myPaddle.setPosition(windowSize.x / 2, windowSize.y / 2);
 	myPaddle.setColor(translucent);
-
+	
 	//setup enemy paddle
 	if (!redPaddle.loadFromFile("Resources/redPaddle.png")) {
 		std::cout << "failed to load sprite" << std::endl;
@@ -209,7 +310,6 @@ void Game::setupGameObjects()
 	sf::Vector2i redSpriteSize(cropShape.width, cropShape.height);
 	enemyPaddle.setOrigin(redSpriteSize.x / 2, redSpriteSize.y / 2);
 	//set paddle position to the centre of the window
-	sf::Vector2f windowSize = (sf::Vector2f)this->window->getSize();
 	enemyPaddle.setPosition(windowSize.x / 2, windowSize.y / 2);
 	enemyPaddle.setColor(translucent);
 }

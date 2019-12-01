@@ -1,6 +1,11 @@
 #pragma once
 #include "State.h"
-class GameState :
+
+const float ARENADEPTH = 1000;
+const float CLIENTDEPTH = 0.95*ARENADEPTH;
+const float SERVERDEPTH = 0.05*ARENADEPTH;
+
+	class GameState :
 	public State
 {
 private:
@@ -8,6 +13,7 @@ private:
 public:
 	GameState(sf::RenderWindow* window);
 	virtual ~GameState();
+
 
 	//functions
 	void updateKeybinds(const float& dt);

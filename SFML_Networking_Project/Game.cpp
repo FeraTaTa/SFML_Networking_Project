@@ -20,9 +20,10 @@ void Game::initWindow()
 	}
 	ifs.close();
 	
-	this->window = new sf::RenderWindow(window_bounds, title);
+	this->window = new sf::RenderWindow(window_bounds, title, sf::Style::Close);
 	this->window->setFramerateLimit(framerate_limit);
 	this->window->setVerticalSyncEnabled(vertical_sync_enabled);
+	
 }
 
 void Game::initStates()
@@ -34,11 +35,13 @@ void Game::initStates()
 
 Game::Game()
 {
-	this->initWindow();
-	this->initStates();
-
-
+	gameBall = NULL;
 	
+	this->selectNetworkState();
+	this->initWindow();
+	this->setupGameObjects();
+	this->startNetwork();
+	this->initStates();
 }
 
 Game::~Game()
@@ -56,17 +59,20 @@ void Game::updateDT()
 {
 	//updates the dt variable with the time it takes to update and render one frame
 	this->dt = this->dtClock.restart();
-	//system("cls");
-	//std::cout << this->dt << std::endl;
 }
 
 //Captures event for closing window
 void Game::updateSFMLEvents()
 {
+	this->playerClicked = false;
+
 	while (this->window->pollEvent(sfEvent))
 	{
 		if (this->sfEvent.type == sf::Event::Closed)
 			this->window->close();
+
+		if (this->sfEvent.type == sf::Event::MouseButtonPressed)
+			this->playerClicked = true;
 	}
 }
 
@@ -202,7 +208,7 @@ void Game::render()
 	}
 
 	this->window->draw(enemyPaddle);
-	this->window->draw(listOfCircles[0]);
+	this->window->draw(*gameBall);
 	this->window->draw(myPaddle);
 
 	this->window->display();
@@ -210,16 +216,10 @@ void Game::render()
 
 void Game::run()
 {
-	setupGameObjects();
-	selectNetworkState();
-	startNetwork();
-
 	//main loop
 	while (this->window->isOpen())
 	{
 		this->updateDT();
-		this->update();
-		this->render();
 		if (isHost) {
 			//server loop is other thread
 			
@@ -228,6 +228,8 @@ void Game::run()
 			//client loop
 			mGameClient->update(dt);
 		}
+		this->update();
+		this->render();
 	}
 }
 
@@ -277,13 +279,13 @@ void Game::startNetwork()
 
 void Game::setupGameObjects()
 {
+	sf::Vector2f windowSize = (sf::Vector2f)this->window->getSize();
 	//setup ball
-	sf::CircleShape ball(100.f);
-	ball.setFillColor(sf::Color::Green);
-	listOfCircles.push_back(ball);
+	ballObj = new Ball(windowSize, isHost);
+	gameBall = ballObj->getBall();
 
-
-	//paddles defined by the 32x32 sprite which is scaled up 10x
+	//paddles are defined by a 32x32 sprite which is scaled up 320x320
+	//the required shape to crop away uneeded part of the sprite
 	sf::IntRect cropShape(30, 90, 260, 140);
 	//			  x start, y start, x length, y length
 	sf::Color translucent = sf::Color(255, 255, 255, 180);

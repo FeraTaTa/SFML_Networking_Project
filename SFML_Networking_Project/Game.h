@@ -22,7 +22,6 @@ private:
 	sf::Vector2f mousePos;
 	sf::Vector2f enemyPaddlePosition;
 	//std::vector<sf::CircleShape> listOfCircles;
-	sf::CircleShape* gameBall;
 
 	sf::Texture bluPaddle;
 	sf::Texture redPaddle;
@@ -34,7 +33,6 @@ private:
 
 	float myDepth;
 
-	Ball* ballObj;
 	std::stack<State*> states;
 	//initialization
 	void initWindow();
@@ -45,6 +43,8 @@ public:
 	Game();
 	virtual ~Game();
 
+	sf::CircleShape* gameBall;
+	Ball* ballObj;
 	bool playerClicked;
 	std::unique_ptr<Server> mGameServer;
 	std::unique_ptr<Client> mGameClient;

@@ -4,6 +4,9 @@
 #include "GameState.h"
 #include "Client.h"
 #include "Server.h"
+#include "Ball.h"
+
+const float PADDLESPEED = 10.f;
 
 class Game
 {
@@ -24,7 +27,9 @@ private:
 	sf::Sprite enemyPaddle;
 	bool isHost = false;
 
+	float myDepth;
 
+	Ball* ballObj;
 	std::stack<State*> states;
 	//initialization
 	void initWindow();

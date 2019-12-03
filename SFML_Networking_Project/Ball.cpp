@@ -5,21 +5,25 @@
 Ball::Ball(sf::Vector2f windowSize, bool isHost):
 	ballRadius(80.f),
 	ballForwardSpeed(STARTINGBALLSPEED),
-	directionTowardsClient(true),
 	zDepthSpeed(STARTINGBALLSPEED),
+	zDepth(BALLSTARTDEPTH),
 	isIdle(true)
 {
+	if (isHost) {
+		zScale.x = zScale.y = 1;
+		//ball initially moves away from host(server)
+		directionTowardsPlayer = false;
+	}
+	else {
+		zScale.x = zScale.y = 0.1f;
+		//ball initially moves towards client
+		directionTowardsPlayer = true;
+	}
 	ball.setRadius(ballRadius);
 	ball.setFillColor(sf::Color::Green);
 	ball.setOrigin(ballRadius, ballRadius);
 	ball.setPosition(windowSize.x / 2, windowSize.y / 2);
-
-	if (isHost) {
-		zDepth = SERVERDEPTH;
-	}
-	else {
-		zDepth = CLIENTDEPTH;
-	}
+	ball.setScale(zScale);
 }
 
 
@@ -33,9 +37,10 @@ void Ball::update(sf::Time dt)
 	
 	if (!isIdle) {
 		//calculate the required depth scaling
-		zDepth += zDepthSpeed * dt.asSeconds() * (directionTowardsClient? 1:-1);
-		float scaleFactor = fmax( 1 - (zDepth / ARENADEPTH), 0.1f);
-		sf::Vector2f zScale(scaleFactor, scaleFactor);
+		zDepth += zDepthSpeed * dt.asSeconds() * (directionTowardsPlayer? -1:1);
+		float scaleFactor = fmax( 1.0f - (zDepth / ARENADEPTH), 0.1f);
+		scaleFactor = fmax(scaleFactor, 1.0f);
+		zScale.x = zScale.y = scaleFactor;
 		ball.setScale(zScale);
 		
 	}
@@ -66,5 +71,5 @@ void Ball::startMove()
 
 void Ball::toggleDirection()
 {
-	directionTowardsClient = !directionTowardsClient;
+	directionTowardsPlayer = !directionTowardsPlayer;
 }

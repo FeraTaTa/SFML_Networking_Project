@@ -24,7 +24,8 @@ public:
 	//forward speed of the ball
 	float ballForwardSpeed;
 
-	bool directionTowardsClient;
+	sf::Vector2f zScale;
+	bool directionTowardsPlayer;
 	bool isGoalScored;
 
 	Ball(sf::Vector2f windowSize, bool isHost);

@@ -30,12 +30,14 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 		{
 				sf::Vector2f paddlePositionUpdate;
 				packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
-				sf::Vector2f currentPaddlePos(world->getMyPaddlePositon());
-				sf::Vector2f interpolatedPosition = currentPaddlePos + (paddlePositionUpdate - currentPaddlePos) * 0.1f;
-				
-				world->setEnemyPaddlePosition(interpolatedPosition);
-				//std::cout << "Recieved position" << std::endl;
-				//std::cout << paddlePosition.x << " " << paddlePosition.y << std::endl;
+				sf::Vector2f currentPaddlePos(world->getEnemyPaddlePosition());
+				world->setEnemyPaddlePosition(paddlePositionUpdate);
+
+				bool isBallIdle;
+				packet >> isBallIdle;
+				world->ballObj->isIdle = isBallIdle;
+
+				//float scale
 		} break;
 	}
 }

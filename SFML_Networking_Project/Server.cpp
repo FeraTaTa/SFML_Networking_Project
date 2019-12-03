@@ -83,14 +83,22 @@ void Server::executionThread()
 
 void Server::tick()
 {
+	//Send data to client every time tick
 	if (mConnectedPlayers != 0) {
-		sf::Packet hostPaddlePosition;
+		sf::Packet serverInfoPacket;
 		//get the current position of server paddle (mypaddle)
 		sf::Vector2f myPaddlePosition(world->getMyPaddlePositon());
 		//create a packet with the correct type and info
-		hostPaddlePosition << packetServer::UpdateClientState << myPaddlePosition.x << myPaddlePosition.y;
+		serverInfoPacket << packetServer::UpdateClientState << myPaddlePosition.x << myPaddlePosition.y;
+
+		//sf::Packet ballDataPacket;
+		//create a packet that holds information about the ball
+		bool isIdle;
+		isIdle = world->ballObj->isIdle;
+		serverInfoPacket << isIdle;
+
 		//send packet
-		sendToClient(hostPaddlePosition);
+		sendToClient(serverInfoPacket);
 	}
 }
 
@@ -124,12 +132,8 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 					case packetClient::PositionUpdate:
 					{
 						sf::Vector2f paddlePositionUpdate;
-
 						packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
-						sf::Vector2f currentPaddlePos(world->getMyPaddlePositon());
-						sf::Vector2f interpolatedPosition = currentPaddlePos + (paddlePositionUpdate - currentPaddlePos) * 0.1f;
-
-						world->setEnemyPaddlePosition(interpolatedPosition);
+						world->setEnemyPaddlePosition(paddlePositionUpdate);
 					} break;
 				}
 				// Packet was indeed received, update the ping timer

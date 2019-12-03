@@ -20,7 +20,7 @@ private:
 	sf::Clock dtClock;
 	sf::Time dt;
 	sf::Vector2f mousePos;
-	sf::Vector2f enemyPaddlePosition;
+	sf::Vector2f nextEnemyPaddlePosition;
 	//std::vector<sf::CircleShape> listOfCircles;
 
 	sf::Texture bluPaddle;
@@ -48,6 +48,9 @@ public:
 	bool playerClicked;
 	std::unique_ptr<Server> mGameServer;
 	std::unique_ptr<Client> mGameClient;
+
+
+
 	//Functions
 	void updateDT();
 	void updateSFMLEvents();

@@ -78,8 +78,8 @@ void Game::updateSFMLEvents()
 
 void Game::update()
 {
-	std::cout << "Game update loop" << std::endl;
-	std::cout << std::boolalpha << isBallPaddleCollision() <<std::noboolalpha << std::endl;
+	//std::cout << "Game update loop" << std::endl;
+	//std::cout << std::boolalpha << isBallPaddleCollision() <<std::noboolalpha << std::endl;
 	this->updateSFMLEvents();
 	mousePos = (sf::Vector2f)sf::Mouse::getPosition(*(this->window));
 	int paddleHeight = myPaddle.getTextureRect().height;
@@ -119,8 +119,8 @@ void Game::update()
 
 
 	myPaddle.setPosition(postoMove.x, postoMove.y);
-	std::cout << enemyPaddlePosition.x << enemyPaddlePosition.y << std::endl;
-	enemyPaddle.setPosition(Interpolate(enemyPaddle.getPosition(),enemyPaddlePosition, dt.asSeconds() * PADDLESPEED));
+	std::cout << nextEnemyPaddlePosition.x << nextEnemyPaddlePosition.y << std::endl;
+	enemyPaddle.setPosition(Interpolate(enemyPaddle.getPosition(),nextEnemyPaddlePosition, dt.asSeconds() * PADDLESPEED));
 	//BALL UPDATE
 	ballObj->update(dt);
 
@@ -183,8 +183,8 @@ void Game::setEnemyPaddlePosition(sf::Vector2f position) {
 	else {
 		postoMove.y = position.y;
 	}
-	enemyPaddlePosition.x = windowSize.x - postoMove.x;
-	enemyPaddlePosition.y = postoMove.y;
+	nextEnemyPaddlePosition.x = windowSize.x - postoMove.x;
+	nextEnemyPaddlePosition.y = postoMove.y;
 
 
 }

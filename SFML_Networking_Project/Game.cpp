@@ -261,7 +261,8 @@ void Game::startNetwork()
 		//myPaddle = serverpaddle - pass this info
 		//enemypaddle = client paddle
 		window->setTitle("Server");
-		ip = "127.0.0.1";
+		//ip = "127.0.0.1";
+		ip = "192.168.0.14";
 		myDepth = SERVERDEPTH;
 		mGameServer.reset(new Server(ip, ServerPort, window->getSize(), *this));
 	}
@@ -270,7 +271,8 @@ void Game::startNetwork()
 		//myPaddle = client paddle - pass this info
 		//enemypaddle = serverpaddle
 		window->setTitle("Client");
-		ip = "127.0.0.1";
+		//ip = "127.0.0.1";
+		ip = "192.168.0.10";
 		myDepth = CLIENTDEPTH;
 		mGameClient.reset(new Client(ip, ServerPort, *this));
 	}

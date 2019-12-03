@@ -256,13 +256,15 @@ void Game::selectNetworkState()
 void Game::startNetwork()
 {
 	sf::IpAddress ip;
+	sf::IpAddress desktopIP = "192.168.0.10";
+	sf::IpAddress laptopIP = "192.168.0.14";
 	if (isHost) {
 		//start server thread
 		//myPaddle = serverpaddle - pass this info
 		//enemypaddle = client paddle
 		window->setTitle("Server");
 		//ip = "127.0.0.1";
-		ip = "192.168.0.14";
+		ip = desktopIP;
 		myDepth = SERVERDEPTH;
 		mGameServer.reset(new Server(ip, ServerPort, window->getSize(), *this));
 	}
@@ -272,7 +274,7 @@ void Game::startNetwork()
 		//enemypaddle = serverpaddle
 		window->setTitle("Client");
 		//ip = "127.0.0.1";
-		ip = "192.168.0.10";
+		ip = desktopIP;
 		myDepth = CLIENTDEPTH;
 		mGameClient.reset(new Client(ip, ServerPort, *this));
 	}

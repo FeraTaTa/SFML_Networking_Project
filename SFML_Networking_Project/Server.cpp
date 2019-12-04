@@ -107,6 +107,8 @@ void Server::tick()
 		sf::Packet ballReversePacket;
 		ballReversePacket << static_cast<sf::Int32>(packetClient::BallReverse);
 		mSocket.send(ballReversePacket);
+		std::cout << "server send ballReverse" << std::endl;
+
 		//reset flag
 		world->ballCollide = false;
 	}
@@ -149,6 +151,7 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 					case packetClient::BallReverse:
 					{
 						world->ballObj->toggleDirection();
+						std::cout << "server receive ballReverse" << std::endl;
 
 					} break;
 

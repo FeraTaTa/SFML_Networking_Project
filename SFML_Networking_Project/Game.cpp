@@ -124,28 +124,17 @@ void Game::update()
 	//BALL UPDATE
 	ballObj->update(dt);
 
-	
 
 	//if the ball is moving
 	if (!ballObj->isIdle) {
 		//does my paddle collide with the ball when it reaches my paddle
-		if (isBallPaddleCollision()  && isHost &&
-				myGoalDepth < ballObj->zDepth && ballObj->zDepth < myDepth)	{ //servers window of opportunity
+		if (isBallPaddleCollision()  && isBallAtHitDepth(isHost)){ 
 
 			//hit the ball and change it's direction
 			ballObj->toggleDirection();
 			//set bool which will send packet to change direction of the ball
 			ballCollide = true;
-			std::cout << "ball collide in host" << std::endl;
-		}
-		if (isBallPaddleCollision() && !isHost &&
-				myDepth < ballObj->zDepth && ballObj->zDepth < myGoalDepth) //client window of opportunity
-		{		
-			//hit the ball and change it's direction
-			ballObj->toggleDirection();
-			//set bool which will send packet to change direction of the ball
-			ballCollide = true;
-			std::cout << "ball collide in server" << std::endl;
+			std::cout << "ball collide in: " << (isHost? "host ":"client ") << std::endl;
 		}
 		//if the ball reaches 100 server scored a point and server gets to start
 		//spawn ball in front of server
@@ -170,6 +159,15 @@ bool Game::isBallPaddleCollision()
 {
 	sf::FloatRect ballRect = gameBall->getGlobalBounds();
 	return myPaddle.getGlobalBounds().intersects(ballRect);
+}
+
+bool Game::isBallAtHitDepth(bool isHost) {
+	if (isHost) {
+		return myGoalDepth <= ballObj->zDepth && ballObj->zDepth < myDepth;
+	}
+	else {
+		return myDepth <= ballObj->zDepth && ballObj->zDepth < myGoalDepth;
+	}
 }
 
 void Game::setEnemyPaddlePosition(sf::Vector2f position) {

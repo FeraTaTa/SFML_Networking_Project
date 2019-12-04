@@ -6,7 +6,8 @@ Ball::Ball(sf::Vector2f windowSize, bool isHost):
 	ballRadius(80.f),
 	ballForwardSpeed(STARTINGBALLSPEED),
 	zDepthSpeed(STARTINGBALLSPEED),
-	isIdle(true)
+	isIdle(true),
+	isHost(isHost)
 {
 	if (isHost) {
 		zScale.x = zScale.y = 1;
@@ -45,10 +46,20 @@ void Ball::update(sf::Time dt)
 	if (!isIdle) {
 		//calculate the required depth scaling
 		zDepth += zDepthSpeed * dt.asSeconds() * (directionTowardsPlayer? myDirection : enemyDirection);
+		//limits between 0 and the maximum depth of the arena
 		zDepth = fmax(0, zDepth);
 		zDepth = fmin(ARENADEPTH, zDepth);
 
-		float scaleFactor = fmax( 1.0f - (zDepth / ARENADEPTH), 0.2f);
+		float scaleFactor; 
+		if (isHost) {
+			scaleFactor = 1.0f - (zDepth / ARENADEPTH);
+		}
+		else{
+			scaleFactor = (zDepth / ARENADEPTH);
+		}
+
+		//limits between 0.2 and 1 scale
+		scaleFactor = fmax(0.2f, scaleFactor);
 		scaleFactor = fmin(scaleFactor, 1.0f);
 		zScale.x = zScale.y = scaleFactor;
 		ball.setScale(zScale);

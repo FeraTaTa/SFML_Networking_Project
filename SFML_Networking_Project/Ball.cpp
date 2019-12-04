@@ -82,4 +82,5 @@ void Ball::startMove()
 void Ball::toggleDirection()
 {
 	directionTowardsPlayer = !directionTowardsPlayer;
+	std::cout << "ball obj change direction bool" << std::endl;
 }

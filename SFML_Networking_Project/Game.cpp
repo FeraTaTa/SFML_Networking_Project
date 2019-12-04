@@ -119,7 +119,7 @@ void Game::update()
 
 
 	myPaddle.setPosition(postoMove.x, postoMove.y);
-	std::cout << nextEnemyPaddlePosition.x << nextEnemyPaddlePosition.y << std::endl;
+	//std::cout << nextEnemyPaddlePosition.x << nextEnemyPaddlePosition.y << std::endl;
 	enemyPaddle.setPosition(Interpolate(enemyPaddle.getPosition(),nextEnemyPaddlePosition, dt.asSeconds() * PADDLESPEED));
 	//BALL UPDATE
 	ballObj->update(dt);
@@ -132,6 +132,7 @@ void Game::update()
 			ballObj->toggleDirection();
 			//set bool which will send packet to change direction of the ball
 			ballCollide = true;
+			std::cout << "ball collide in game" << std::endl;
 		}
 		//if the ball reaches 100 server scored a point and server gets to start
 		//spawn ball in front of server

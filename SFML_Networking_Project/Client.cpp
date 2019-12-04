@@ -6,7 +6,7 @@ Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game):
 	mTimeSinceLastPacket(sf::seconds(0.f))
 {
 	world = &game;
-	std::cout << "client constructor" << std::endl;
+	//std::cout << "client constructor" << std::endl;
 	if (mSocket.connect(ip, ServerPort, sf::seconds(5.f)) == sf::TcpSocket::Done) {
 		mConnected = true;
 		std::cout << "client connected" << std::endl;

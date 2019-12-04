@@ -23,6 +23,7 @@ namespace packetClient
 	{
 		PlayerEvent,
 		PlayerRealtimeChange,
+		BallReverse,
 		RequestCoopPartner,
 		PositionUpdate,
 		GameEvent,
@@ -42,6 +43,7 @@ namespace packetServer
 		PlayerRealtimeChange,
 		PlayerConnect,
 		PlayerDisconnect,
+		BallReverse,
 		AcceptCoopPartner,
 		SpawnEnemy,
 		SpawnPickup,

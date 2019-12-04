@@ -100,6 +100,16 @@ void Server::tick()
 		//send packet
 		sendToClient(serverInfoPacket);
 	}
+
+	//if ball collide flag set then change direction
+	if (world->ballCollide) {
+		//send a packet stating the ball has changed direction
+		sf::Packet ballReversePacket;
+		ballReversePacket << static_cast<sf::Int32>(packetClient::BallReverse);
+		mSocket.send(ballReversePacket);
+		//reset flag
+		world->ballCollide = false;
+	}
 }
 
 sf::Time Server::now() const
@@ -135,6 +145,13 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 						packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
 						world->setEnemyPaddlePosition(paddlePositionUpdate);
 					} break;
+
+					case packetClient::BallReverse:
+					{
+						world->ballObj->toggleDirection();
+
+					} break;
+
 				}
 				// Packet was indeed received, update the ping timer
 				mPeer->lastPacketTime = now();

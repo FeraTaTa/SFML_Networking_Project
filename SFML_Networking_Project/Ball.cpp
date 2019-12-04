@@ -47,7 +47,7 @@ void Ball::update(sf::Time dt)
 		float scaleFactor = fmax( 1.0f - (zDepth / ARENADEPTH), 0.2f);
 		scaleFactor = fmin(scaleFactor, 1.0f);
 		zScale.x = zScale.y = scaleFactor;
-		ball.setScale(zScale);
+		ball.setScale(zScale*dt.asSeconds());
 		
 	}
 }

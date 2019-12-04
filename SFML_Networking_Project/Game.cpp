@@ -36,7 +36,7 @@ void Game::initStates()
 Game::Game()
 {
 	gameBall = NULL;
-	
+	ballCollide = false;
 	this->selectNetworkState();
 	this->initWindow();
 	this->setupGameObjects();
@@ -130,13 +130,15 @@ void Game::update()
 		if (isBallPaddleCollision()  && ballObj->zDepth == myDepth) {
 			//hit the ball and change it's direction
 			ballObj->toggleDirection();
+			//set bool which will send packet to change direction of the ball
+			ballCollide = true;
 		}
 		//if the ball reaches 100 server scored a point and server gets to start
 		//spawn ball in front of server
 		//if the ball reaches 0 client scored a point
 		//spawn ball in front of client
 		
-		
+		//TODO if ball behind paddle you lose
 	}
 }
 

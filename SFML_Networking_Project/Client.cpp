@@ -39,6 +39,12 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 
 				//float scale
 		} break;
+
+		case packetServer::BallReverse:
+		{
+			world->ballObj->toggleDirection();
+
+		} break;
 	}
 }
 
@@ -78,6 +84,15 @@ bool Client::update(sf::Time dt)
 
 			mSocket.send(positionUpdatePacket);
 			mTickClock.restart();
+		}
+
+		if (world->ballCollide) {
+			//send a packet stating the ball has changed direction
+			sf::Packet ballReversePacket;
+			ballReversePacket << static_cast<sf::Int32>(packetClient::BallReverse);
+			mSocket.send(ballReversePacket);
+			//reset flag
+			world->ballCollide = false;
 		}
 
 		mTimeSinceLastPacket += dt;

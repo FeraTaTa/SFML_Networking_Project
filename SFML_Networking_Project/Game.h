@@ -46,6 +46,8 @@ public:
 	sf::CircleShape* gameBall;
 	Ball* ballObj;
 	bool playerClicked;
+	bool ballCollide;
+
 	std::unique_ptr<Server> mGameServer;
 	std::unique_ptr<Client> mGameClient;
 

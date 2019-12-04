@@ -105,7 +105,7 @@ void Server::tick()
 	if (world->ballCollide) {
 		//send a packet stating the ball has changed direction
 		sf::Packet ballReversePacket;
-		ballReversePacket << static_cast<sf::Int32>(packetClient::BallReverse);
+		ballReversePacket << static_cast<sf::Int32>(packetServer::BallReverse);
 		mSocket.send(ballReversePacket);
 		std::cout << "server send ballReverse" << std::endl;
 

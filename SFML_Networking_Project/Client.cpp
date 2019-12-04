@@ -43,7 +43,7 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 		case packetServer::BallReverse:
 		{
 			world->ballObj->toggleDirection();
-			std::cout << "server receive ballReverse" << std::endl;
+			std::cout << "client receive ballReverse" << std::endl;
 
 		} break;
 	}

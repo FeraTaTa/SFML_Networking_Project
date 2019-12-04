@@ -26,6 +26,12 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 {
 	switch (packetType)
 	{
+		case packetServer::BallReverse:
+		{
+			world->ballObj->toggleDirection();
+			std::cout << "client receive ballReverse" << std::endl;
+
+		} break;
 		case packetServer::UpdateClientState:
 		{
 				sf::Vector2f paddlePositionUpdate;
@@ -40,12 +46,6 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 				//float scale
 		} break;
 
-		case packetServer::BallReverse:
-		{
-			world->ballObj->toggleDirection();
-			std::cout << "client receive ballReverse" << std::endl;
-
-		} break;
 	}
 }
 

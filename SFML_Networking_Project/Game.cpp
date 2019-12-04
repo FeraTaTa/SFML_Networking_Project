@@ -125,8 +125,8 @@ void Game::update()
 	ballObj->update(dt);
 
 
-	//if the ball is moving
-	if (!ballObj->isIdle) {
+	//if the ball is moving and its towards the player
+	if (!ballObj->isIdle && ballObj->directionTowardsPlayer) {
 		//does my paddle collide with the ball when it reaches my paddle
 		if (isBallPaddleCollision()  && isBallAtHitDepth(isHost)){ 
 

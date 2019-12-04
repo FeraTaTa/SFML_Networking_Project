@@ -83,6 +83,18 @@ void Server::executionThread()
 
 void Server::tick()
 {
+	//if ball collide flag set then change direction
+	if (world->ballCollide) {
+		//send a packet stating the ball has changed direction
+		sf::Packet ballReversePacket;
+		ballReversePacket << static_cast<sf::Int32>(packetServer::BallReverse);
+		sendToClient(ballReversePacket);
+		std::cout << "server send ballReverse" << std::endl;
+
+		//reset flag
+		world->ballCollide = false;
+	}
+
 	//Send data to client every time tick
 	if (mConnectedPlayers != 0) {
 		sf::Packet serverInfoPacket;
@@ -101,17 +113,6 @@ void Server::tick()
 		sendToClient(serverInfoPacket);
 	}
 
-	//if ball collide flag set then change direction
-	if (world->ballCollide) {
-		//send a packet stating the ball has changed direction
-		sf::Packet ballReversePacket;
-		ballReversePacket << static_cast<sf::Int32>(packetServer::BallReverse);
-		mSocket.send(ballReversePacket);
-		std::cout << "server send ballReverse" << std::endl;
-
-		//reset flag
-		world->ballCollide = false;
-	}
 }
 
 sf::Time Server::now() const

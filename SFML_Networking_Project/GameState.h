@@ -4,7 +4,7 @@
 const float ARENADEPTH = 1000;
 const float CLIENTDEPTH = 0.95*ARENADEPTH;
 const float SERVERDEPTH = 0.05*ARENADEPTH;
-const float BALLSTARTDEPTH = 0.05*ARENADEPTH;
+const float BALLSTARTDEPTH = SERVERDEPTH;
 
 	class GameState :
 	public State

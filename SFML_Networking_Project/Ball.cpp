@@ -6,7 +6,6 @@ Ball::Ball(sf::Vector2f windowSize, bool isHost):
 	ballRadius(80.f),
 	ballForwardSpeed(STARTINGBALLSPEED),
 	zDepthSpeed(STARTINGBALLSPEED),
-	zDepth(BALLSTARTDEPTH),
 	isIdle(true)
 {
 	if (isHost) {
@@ -18,6 +17,10 @@ Ball::Ball(sf::Vector2f windowSize, bool isHost):
 		zScale.x = zScale.y = 0.1f;
 		//ball initially moves towards client
 		directionTowardsPlayer = true;
+	}
+	if (true) { //TODO create a variable that sets ball to each paddle depth if they score
+		//for now always set ball to start at server
+		zDepth = BALLSTARTDEPTH;
 	}
 	ball.setRadius(ballRadius);
 	ball.setFillColor(sf::Color::Green);
@@ -38,8 +41,11 @@ void Ball::update(sf::Time dt)
 	if (!isIdle) {
 		//calculate the required depth scaling
 		zDepth += zDepthSpeed * dt.asSeconds() * (directionTowardsPlayer? -1:1);
-		float scaleFactor = fmax( 1.0f - (zDepth / ARENADEPTH), 0.1f);
-		scaleFactor = fmax(scaleFactor, 1.0f);
+		zDepth = fmax(0, zDepth);
+		zDepth = fmin(ARENADEPTH, zDepth);
+
+		float scaleFactor = fmax( 1.0f - (zDepth / ARENADEPTH), 0.2f);
+		scaleFactor = fmin(scaleFactor, 1.0f);
 		zScale.x = zScale.y = scaleFactor;
 		ball.setScale(zScale);
 		

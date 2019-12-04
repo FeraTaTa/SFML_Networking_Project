@@ -124,10 +124,15 @@ void Game::update()
 	//BALL UPDATE
 	ballObj->update(dt);
 
+	
+
 	//if the ball is moving
 	if (!ballObj->isIdle) {
 		//does my paddle collide with the ball when it reaches my paddle
-		if (isBallPaddleCollision()  && ballObj->zDepth == myDepth) {
+		if (isBallPaddleCollision()  && 
+			(	myDepth < ballObj->zDepth && ballObj->zDepth < myGoalDepth //client window of opportunity
+					|| myGoalDepth < ballObj->zDepth && ballObj->zDepth < myDepth)	){ //servers window of opportunity
+
 			//hit the ball and change it's direction
 			ballObj->toggleDirection();
 			//set bool which will send packet to change direction of the ball
@@ -269,6 +274,7 @@ void Game::startNetwork()
 		//ip = "127.0.0.1";
 		ip = desktopIP;
 		myDepth = SERVERDEPTH;
+		myGoalDepth = 0;
 		mGameServer.reset(new Server(ip, ServerPort, window->getSize(), *this));
 	}
 	else {
@@ -279,6 +285,7 @@ void Game::startNetwork()
 		//ip = "127.0.0.1";
 		ip = desktopIP;
 		myDepth = CLIENTDEPTH;
+		myGoalDepth = ARENADEPTH;
 		mGameClient.reset(new Client(ip, ServerPort, *this));
 	}
 	

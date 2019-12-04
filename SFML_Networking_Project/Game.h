@@ -51,7 +51,7 @@ public:
 	std::unique_ptr<Server> mGameServer;
 	std::unique_ptr<Client> mGameClient;
 
-
+	float myGoalDepth;
 
 	//Functions
 	void updateDT();

@@ -38,6 +38,7 @@ public:
 	sf::Vector2f calcXYMoveComponents(sf::Time dt);
 	float calcDepthMoveSpeed();
 	//sf::intrect returnRect;
+	bool isHost;
 
 	void startMove();
 	void toggleDirection();

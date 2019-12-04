@@ -8,7 +8,8 @@ class Ball
 private:
 
 	float ballRadius;
-
+	int myDirection;
+	int enemyDirection;
 
 	//angles between the ball zForward and the screen XY axis
 	float thetaX;

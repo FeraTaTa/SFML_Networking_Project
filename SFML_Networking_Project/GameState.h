@@ -6,6 +6,9 @@ const float CLIENTDEPTH = 0.95*ARENADEPTH;
 const float SERVERDEPTH = 0.05*ARENADEPTH;
 const float BALLSTARTDEPTH = SERVERDEPTH;
 
+const int TOWARDSERVER = -1;
+const int TOWARDCLIENT = 1;
+
 	class GameState :
 	public State
 {

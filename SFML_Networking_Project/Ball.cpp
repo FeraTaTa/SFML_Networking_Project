@@ -12,11 +12,15 @@ Ball::Ball(sf::Vector2f windowSize, bool isHost):
 		zScale.x = zScale.y = 1;
 		//ball initially moves away from host(server)
 		directionTowardsPlayer = false;
+		myDirection = TOWARDSERVER;
+		enemyDirection = TOWARDCLIENT;
 	}
 	else {
 		zScale.x = zScale.y = 0.1f;
 		//ball initially moves towards client
 		directionTowardsPlayer = true;
+		myDirection = TOWARDCLIENT;
+		enemyDirection = TOWARDSERVER;
 	}
 	if (true) { //TODO create a variable that sets ball to each paddle depth if they score
 		//for now always set ball to start at server
@@ -40,7 +44,7 @@ void Ball::update(sf::Time dt)
 	
 	if (!isIdle) {
 		//calculate the required depth scaling
-		zDepth += zDepthSpeed * dt.asSeconds() * (directionTowardsPlayer? -1:1);
+		zDepth += zDepthSpeed * dt.asSeconds() * (directionTowardsPlayer? myDirection : enemyDirection);
 		zDepth = fmax(0, zDepth);
 		zDepth = fmin(ARENADEPTH, zDepth);
 

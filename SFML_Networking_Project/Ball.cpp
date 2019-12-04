@@ -63,6 +63,7 @@ void Ball::update(sf::Time dt)
 		scaleFactor = fmin(scaleFactor, 1.0f);
 		zScale.x = zScale.y = scaleFactor;
 		ball.setScale(zScale);
+		std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
 		
 	}
 }

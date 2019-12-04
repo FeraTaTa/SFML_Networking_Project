@@ -129,15 +129,23 @@ void Game::update()
 	//if the ball is moving
 	if (!ballObj->isIdle) {
 		//does my paddle collide with the ball when it reaches my paddle
-		if (isBallPaddleCollision()  && 
-			(	myDepth < ballObj->zDepth && ballObj->zDepth < myGoalDepth //client window of opportunity
-					|| myGoalDepth < ballObj->zDepth && ballObj->zDepth < myDepth)	){ //servers window of opportunity
+		if (isBallPaddleCollision()  && isHost &&
+				myGoalDepth < ballObj->zDepth && ballObj->zDepth < myDepth)	{ //servers window of opportunity
 
 			//hit the ball and change it's direction
 			ballObj->toggleDirection();
 			//set bool which will send packet to change direction of the ball
 			ballCollide = true;
-			std::cout << "ball collide in game" << std::endl;
+			std::cout << "ball collide in host" << std::endl;
+		}
+		if (isBallPaddleCollision() && !isHost &&
+				myDepth < ballObj->zDepth && ballObj->zDepth < myGoalDepth) //client window of opportunity
+		{		
+			//hit the ball and change it's direction
+			ballObj->toggleDirection();
+			//set bool which will send packet to change direction of the ball
+			ballCollide = true;
+			std::cout << "ball collide in server" << std::endl;
 		}
 		//if the ball reaches 100 server scored a point and server gets to start
 		//spawn ball in front of server

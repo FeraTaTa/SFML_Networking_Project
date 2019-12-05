@@ -124,8 +124,6 @@ void Game::update()
 	myPaddle.setPosition(postoMove.x, postoMove.y);
 	//std::cout << nextEnemyPaddlePosition.x << nextEnemyPaddlePosition.y << std::endl;
 	enemyPaddle.setPosition(Interpolate(enemyPaddle.getPosition(),nextEnemyPaddlePosition, dt.asSeconds() * PADDLESPEED));
-	//BALL UPDATE
-	ballObj->update(dt);
 
 
 	//if the ball is moving and its towards the player
@@ -148,6 +146,8 @@ void Game::update()
 		
 		//TODO if ball behind paddle you lose
 	}
+	//BALL UPDATE
+	ballObj->update(dt);
 }
 
 sf::Vector2f Game::Interpolate(const sf::Vector2f& pointA,const sf::Vector2f& pointB,	float factor) {

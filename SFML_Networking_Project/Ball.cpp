@@ -117,28 +117,30 @@ bool Ball::isBallEdgeCollide(float ballAtDepth)
 	//if ball x position add its radius is outside the window width bounds then make 
 	//the ball stay within the bounds and reflect its x angle 
 	if (ballPos.x + radius > winWidth) {
-		ballPos.x = winWidth - radius;
+		ball.setPosition(winWidth - radius, ballPos.y);
 		thetaX *= -1;
 		std::cout << "reflect in x axis right of window" << std::endl;
 		std::cout << "ball limited to: " << ballPos.x << " Current angle is : " << thetaX << " at depth: " << zDepth << std::endl;
 	}
 	else if (ballPos.x - radius < 0) {
-		ballPos.x = radius;
+		ball.setPosition(radius, ballPos.y);
 		thetaX *= -1;
 		std::cout << "reflect in x axis left of window" << std::endl;
 		std::cout << "ball limited to: " << ballPos.x << " Current angle is : " << thetaX << " at depth: " << zDepth << std::endl;
 	}
 
+	//update ballPos
+	ballPos = ball.getPosition();
 	//if ball y position add its radius is outside the window height bounds then make 
 	//the ball stay within the bounds and reflect its y angle 
 	if (ballPos.y + radius > winHeight) {
-		ballPos.y = winHeight - radius;
+		ball.setPosition(ballPos.x, winHeight - radius);
 		thetaY *= -1;
 		std::cout << "reflect in y axis bottom of window" << std::endl;
 		std::cout << "ball limited to: " << ballPos.y << " Current angle is : " << thetaY << " at depth: "<< zDepth<< std::endl;
-	}
+	}                                                                           
 	else if (ballPos.y - radius < 0) {
-		ballPos.y = radius;
+		ball.setPosition(ballPos.x, radius);
 		thetaY *= -1;
 		std::cout << "reflect in y axis top of window" << std::endl;
 		std::cout << "ball limited to: " << ballPos.y << " Current angle is : " << thetaY << " at depth: " << zDepth << std::endl;

@@ -2,6 +2,7 @@
 #include "Game.h"
 
 Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game):
+	mThread(&Client::update, this),
 	mClientTimeout(sf::seconds(2.f)),
 	mTimeSinceLastPacket(sf::seconds(0.f))
 {
@@ -15,11 +16,13 @@ Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game):
 		//mFailedConnectionClock.restart();
 
 	mSocket.setBlocking(false);
+	mThread.launch();
 }
 
 
 Client::~Client()
 {
+	mThread.wait();
 }
 
 void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
@@ -56,8 +59,9 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 	}
 }
 
-bool Client::update(sf::Time dt)
+void Client::update()
 {
+	sf::Time dt = world->getTime();
 	// Connected to server: Handle all the network logic
 	if (mConnected)
 	{
@@ -111,6 +115,4 @@ bool Client::update(sf::Time dt)
 
 		mTimeSinceLastPacket += dt;
 	}
-
-	return true;
 }

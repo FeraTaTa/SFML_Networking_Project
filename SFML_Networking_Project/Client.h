@@ -18,7 +18,7 @@ private:
 	sf::Time mTimeSinceLastPacket;
 	sf::Time mClientTimeout;
 	sf::Clock					mTickClock;
-
+	sf::Thread			mThread;
 	Game* world;
 
 	PaddleInfo clientPaddle;
@@ -29,5 +29,5 @@ public:
 	virtual ~Client();
 	
 	void handlePacket(sf::Int32 packetType, sf::Packet& packet);
-	bool update(sf::Time dt);
+	void update();
 };

@@ -204,14 +204,19 @@ void Game::calculateNewBallAngle(Ball* ball)
 		ball->thetaY -= offset.y * proportionalFactor * 1;
 	}
 	//limit the angles to -80 to 80 degrees
-	ball->thetaX = fmax(ball->thetaX, -80);
-	ball->thetaX = fmin(ball->thetaX, 80);
-	ball->thetaY = fmax(ball->thetaY, -80);
-	ball->thetaY = fmin(ball->thetaY, 80);
+	ball->thetaX = fmax(ball->thetaX, -80.f);
+	ball->thetaX = fmin(ball->thetaX, 80.f);
+	ball->thetaY = fmax(ball->thetaY, -80.f);
+	ball->thetaY = fmin(ball->thetaY, 80.f);
 
 	std::cout << "x offset= " << offset.x << " y offset = " << offset.y << std::endl;
 	std::cout << "new thetaX = " << ball->thetaX << std::endl;
 	std::cout << "new thetaY = " << ball->thetaY << std::endl << std::endl;
+}
+
+sf::Time Game::getTime()
+{
+	return this->dt;
 }
 
 void Game::setEnemyPaddlePosition(sf::Vector2f position) {
@@ -284,7 +289,7 @@ void Game::run()
 		}
 		else {
 			//client loop
-			mGameClient->update(dt);
+			//mGameClient->update(dt);
 		}
 		this->update();
 		this->render();
@@ -374,7 +379,7 @@ void Game::setupGameObjects()
 	enemyPaddle.setTextureRect(cropShape);
 	//change the origin of the paddle to be (0,0)
 	sf::Vector2i redSpriteSize(cropShape.width, cropShape.height);
-	enemyPaddle.setOrigin(redSpriteSize.x / 2, redSpriteSize.y / 2);
+	enemyPaddle.setOrigin((float)redSpriteSize.x / 2, (float)redSpriteSize.y / 2);
 	//set paddle position to the centre of the window
 	enemyPaddle.setPosition(windowSize.x / 2, windowSize.y / 2);
 	enemyPaddle.setColor(translucent);

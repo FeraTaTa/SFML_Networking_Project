@@ -70,6 +70,7 @@ public:
 	bool isBallPaddleCollision();
 	bool isBallAtHitDepth(bool isHost);
 	void calculateNewBallAngle(Ball* ball);
+	sf::Time getTime();
 };
 
 #endif

@@ -177,6 +177,8 @@ bool Game::isBallAtHitDepth(bool isHost) {
 
 void Game::calculateNewBallAngle(Ball* ball)
 {
+	std::cout << "prev thetaX = " << ball->thetaX << std::endl;
+	std::cout << "prev thetaY = " << ball->thetaY << std::endl << std::endl;
 	//find the vector between my paddle and the balls current position
 	sf::Vector2f offset = myPaddle.getPosition() - gameBall->getPosition();
 	float proportionalFactor = 1.0f;
@@ -208,8 +210,8 @@ void Game::calculateNewBallAngle(Ball* ball)
 	ball->thetaY = fmin(ball->thetaY, 80);
 
 	std::cout << "x offset= " << offset.x << " y offset = " << offset.y << std::endl;
-	std::cout << "thetaX = " << ball->thetaX << std::endl;
-	std::cout << "thetaY = " << ball->thetaY << std::endl << std::endl;
+	std::cout << "new thetaX = " << ball->thetaX << std::endl;
+	std::cout << "new thetaY = " << ball->thetaY << std::endl << std::endl;
 }
 
 void Game::setEnemyPaddlePosition(sf::Vector2f position) {

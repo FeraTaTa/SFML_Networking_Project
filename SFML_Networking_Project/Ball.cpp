@@ -71,12 +71,12 @@ void Ball::update(sf::Time dt)
 
 		ball.move(calcXYMoveComponents(dt));
 
-		//std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
+		std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
 		
-		if (zDepth == ARENADEPTH || zDepth == 0) {
-			isIdle = true;
-			ball.setFillColor(sf::Color::Red);
-		}
+		//if (zDepth == ARENADEPTH || zDepth == 0) {
+		//	isIdle = true;
+		//	ball.setFillColor(sf::Color::Red);
+		//}
 	}
 }
 
@@ -119,10 +119,14 @@ bool Ball::isBallEdgeCollide(float ballAtDepth)
 	if (ballPos.x + radius > winWidth) {
 		ballPos.x = winWidth - radius;
 		thetaX *= -1;
+		std::cout << "reflect in x axis right of window" << std::endl;
+
 	}
 	else if (ballPos.x - radius < 0) {
 		ballPos.x = radius;
 		thetaX *= -1;
+		std::cout << "reflect in x axis left of window" << std::endl;
+
 	}
 
 	//if ball y position add its radius is outside the window height bounds then make 
@@ -130,10 +134,14 @@ bool Ball::isBallEdgeCollide(float ballAtDepth)
 	if (ballPos.y + radius > winHeight) {
 		ballPos.y = winHeight - radius;
 		thetaY *= -1;
+		std::cout << "reflect in x axis bottom of window" << std::endl;
+
 	}
 	else if (ballPos.y - radius < 0) {
 		ballPos.y = radius;
 		thetaY *= -1;
+		std::cout << "reflect in x axis top of window" << std::endl;
+
 	}
 
 	return false;

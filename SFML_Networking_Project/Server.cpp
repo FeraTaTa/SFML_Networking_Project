@@ -182,6 +182,7 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 			{
 				std::cout << "time out" << std::endl;
 				mPeer->timedOut = true;
+				mPeer->ready = false;
 				detectedTimeout = true;
 			}
 		}

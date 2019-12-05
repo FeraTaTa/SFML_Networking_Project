@@ -7,6 +7,10 @@ Ball::Ball(sf::Vector2f windowSize, bool isHost):
 	ballForwardSpeed(STARTINGBALLSPEED),
 	zDepthSpeed(STARTINGBALLSPEED),
 	isIdle(true),
+	thetaX(0.f),
+	thetaY(0.f),
+	winWidth(windowSize.x),
+	winHeight(windowSize.y),
 	isHost(isHost)
 {
 	if (isHost) {
@@ -45,10 +49,11 @@ void Ball::update(sf::Time dt)
 	
 	if (!isIdle) {
 		//calculate the required depth scaling
-		zDepth += zDepthSpeed * dt.asSeconds() * (directionTowardsPlayer? myDirection : enemyDirection);
+		zDepth += calcDepthMoveSpeed() * dt.asSeconds() * (directionTowardsPlayer? myDirection : enemyDirection);
 		//limits between 0 and the maximum depth of the arena
 		zDepth = fmax(0, zDepth);
 		zDepth = fmin(ARENADEPTH, zDepth);
+		isBallEdgeCollide(zDepth);
 
 		float scaleFactor; 
 		if (isHost) {
@@ -63,8 +68,15 @@ void Ball::update(sf::Time dt)
 		scaleFactor = fmin(scaleFactor, 1.0f);
 		zScale.x = zScale.y = scaleFactor;
 		ball.setScale(zScale);
-		std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
+
+		ball.move(calcXYMoveComponents(dt));
+
+		//std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
 		
+		if (zDepth == ARENADEPTH || zDepth == 0) {
+			isIdle = true;
+			ball.setFillColor(sf::Color::Red);
+		}
 	}
 }
 
@@ -75,14 +87,14 @@ sf::CircleShape* Ball::getBall()
 
 sf::Vector2f Ball::calcXYMoveComponents(sf::Time dt)
 {
-	sf::Vector2f xyMoveValues(ballForwardSpeed*dt.asSeconds() * cos(thetaX), 
-								ballForwardSpeed*dt.asSeconds() * cos(thetaY));
+	sf::Vector2f xyMoveValues(ballForwardSpeed*dt.asSeconds() * sin(thetaX * CONVERTTORADIANS),
+								ballForwardSpeed*dt.asSeconds() * sin(thetaY * CONVERTTORADIANS));
 	return xyMoveValues;
 }
 
 float Ball::calcDepthMoveSpeed()
 {
-	zDepthSpeed = ballForwardSpeed * sin(thetaX) + ballForwardSpeed * sin(thetaY);
+	zDepthSpeed = ballForwardSpeed * ( cos(thetaX * CONVERTTORADIANS) + cos(thetaY * CONVERTTORADIANS) );
 	return zDepthSpeed;
 }
 
@@ -95,4 +107,34 @@ void Ball::toggleDirection()
 {
 	directionTowardsPlayer = !directionTowardsPlayer;
 	std::cout << "ball obj change direction bool" << std::endl;
+}
+
+bool Ball::isBallEdgeCollide(float ballAtDepth)
+{
+	float radius = ball.getRadius();
+	sf::Vector2f ballPos = ball.getPosition();
+
+	//if ball x position add its radius is outside the window width bounds then make 
+	//the ball stay within the bounds and reflect its x angle 
+	if (ballPos.x + radius > winWidth) {
+		ballPos.x = winWidth - radius;
+		thetaX *= -1;
+	}
+	else if (ballPos.x - radius < 0) {
+		ballPos.x = radius;
+		thetaX *= -1;
+	}
+
+	//if ball y position add its radius is outside the window height bounds then make 
+	//the ball stay within the bounds and reflect its y angle 
+	if (ballPos.y + radius > winHeight) {
+		ballPos.y = winHeight - radius;
+		thetaY *= -1;
+	}
+	else if (ballPos.y - radius < 0) {
+		ballPos.y = radius;
+		thetaY *= -1;
+	}
+
+	return false;
 }

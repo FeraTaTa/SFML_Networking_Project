@@ -11,10 +11,8 @@ private:
 	int myDirection;
 	int enemyDirection;
 
-	//angles between the ball zForward and the screen XY axis
-	float thetaX;
-	float thetaY;
-
+	float winWidth;
+	float winHeight;
 
 public:
 	bool isIdle;
@@ -29,6 +27,11 @@ public:
 	bool directionTowardsPlayer;
 	bool isGoalScored;
 
+	//angles between the ball zForward and the screen XY axis 
+	//range of -90 to 90, 0 being straight forward
+	float thetaX;
+	float thetaY;
+
 	Ball(sf::Vector2f windowSize, bool isHost);
 	virtual ~Ball();
 	sf::CircleShape ball;
@@ -42,4 +45,6 @@ public:
 
 	void startMove();
 	void toggleDirection();
+
+	bool isBallEdgeCollide(float ballAtDepth);
 };

@@ -120,13 +120,13 @@ bool Ball::isBallEdgeCollide(float ballAtDepth)
 		ballPos.x = winWidth - radius;
 		thetaX *= -1;
 		std::cout << "reflect in x axis right of window" << std::endl;
-
+		std::cout << "ball limited to: " << ballPos.x << " Current angle is : " << thetaX << " at depth: " << zDepth << std::endl;
 	}
 	else if (ballPos.x - radius < 0) {
 		ballPos.x = radius;
 		thetaX *= -1;
 		std::cout << "reflect in x axis left of window" << std::endl;
-
+		std::cout << "ball limited to: " << ballPos.x << " Current angle is : " << thetaX << " at depth: " << zDepth << std::endl;
 	}
 
 	//if ball y position add its radius is outside the window height bounds then make 
@@ -134,14 +134,14 @@ bool Ball::isBallEdgeCollide(float ballAtDepth)
 	if (ballPos.y + radius > winHeight) {
 		ballPos.y = winHeight - radius;
 		thetaY *= -1;
-		std::cout << "reflect in x axis bottom of window" << std::endl;
-
+		std::cout << "reflect in y axis bottom of window" << std::endl;
+		std::cout << "ball limited to: " << ballPos.y << " Current angle is : " << thetaY << " at depth: "<< zDepth<< std::endl;
 	}
 	else if (ballPos.y - radius < 0) {
 		ballPos.y = radius;
 		thetaY *= -1;
-		std::cout << "reflect in x axis top of window" << std::endl;
-
+		std::cout << "reflect in y axis top of window" << std::endl;
+		std::cout << "ball limited to: " << ballPos.y << " Current angle is : " << thetaY << " at depth: " << zDepth << std::endl;
 	}
 
 	return false;

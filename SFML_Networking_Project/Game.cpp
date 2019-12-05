@@ -37,6 +37,7 @@ Game::Game()
 {
 	gameBall = NULL;
 	ballCollide = false;
+	gameStart = false;
 	this->selectNetworkState();
 	this->initWindow();
 	this->setupGameObjects();
@@ -115,6 +116,7 @@ void Game::update()
 		if (isBallPaddleCollision()) {
 			calculateNewBallAngle(ballObj);
 			ballObj->startMove();
+			gameStart = true;
 		}
 	}
 

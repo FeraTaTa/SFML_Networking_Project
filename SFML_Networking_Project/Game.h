@@ -52,6 +52,7 @@ public:
 	std::unique_ptr<Client> mGameClient;
 
 	float myGoalDepth;
+	bool gameStart;
 
 	//Functions
 	void updateDT();

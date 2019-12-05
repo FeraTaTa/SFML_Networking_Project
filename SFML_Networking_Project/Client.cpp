@@ -39,6 +39,10 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 				sf::Vector2f currentPaddlePos(world->getEnemyPaddlePosition());
 				world->setEnemyPaddlePosition(paddlePositionUpdate);
 
+			//float scale
+		} break;
+		case packetServer::StartGame:
+		{
 				bool isBallIdle;
 				packet >> isBallIdle;
 				world->ballObj->isIdle = isBallIdle;

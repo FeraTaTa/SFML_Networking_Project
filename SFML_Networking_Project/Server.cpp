@@ -83,6 +83,22 @@ void Server::executionThread()
 
 void Server::tick()
 {
+	if (world->gameStart) {
+		//send a packet stating the ball has started moving with its initial angle
+		sf::Packet gameStartPacket;
+		gameStartPacket << static_cast<sf::Int32>(packetServer::StartGame);
+
+		bool isIdle = world->ballObj->isIdle;
+		float invertedBallXAngle = -1 * world->ballObj->thetaX;
+		float ballYAngle = world->ballObj->thetaY;
+
+		gameStartPacket << isIdle << invertedBallXAngle << ballYAngle;
+		sendToClient(gameStartPacket);
+
+		world->gameStart = false;
+
+	}
+
 	//if ball collide flag set then change direction
 	if (world->ballCollide) {
 		//send a packet stating the ball has changed direction

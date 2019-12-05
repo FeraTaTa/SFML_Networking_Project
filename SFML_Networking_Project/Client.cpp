@@ -30,25 +30,28 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 		{
 			world->ballObj->toggleDirection();
 			std::cout << "client receive ballReverse" << std::endl;
+			packet >> world->ballObj->thetaX >> world->ballObj->thetaY;
 
 		} break;
 		case packetServer::UpdateClientState:
 		{
-				sf::Vector2f paddlePositionUpdate;
-				packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
-				sf::Vector2f currentPaddlePos(world->getEnemyPaddlePosition());
-				world->setEnemyPaddlePosition(paddlePositionUpdate);
+			sf::Vector2f paddlePositionUpdate;
+			packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
+			sf::Vector2f currentPaddlePos(world->getEnemyPaddlePosition());
+			world->setEnemyPaddlePosition(paddlePositionUpdate);
 
 			//float scale
 		} break;
 		case packetServer::StartGame:
 		{
-				bool isBallIdle;
-				packet >> isBallIdle;
-				world->ballObj->isIdle = isBallIdle;
+			bool isBallIdle;
+			packet >> isBallIdle;
+			world->ballObj->isIdle = isBallIdle;
 
-				//float scale
-		} break;
+			packet >> world->ballObj->thetaX >> world->ballObj->thetaY;
+			
+		}
+		
 
 	}
 }
@@ -95,8 +98,13 @@ bool Client::update(sf::Time dt)
 			//send a packet stating the ball has changed direction
 			sf::Packet ballReversePacket;
 			ballReversePacket << static_cast<sf::Int32>(packetClient::BallReverse);
-			mSocket.send(ballReversePacket);
 			std::cout << "client send ballReverse" << std::endl;
+
+			float invertedBallXAngle = -1 * world->ballObj->thetaX;
+			float ballYAngle = world->ballObj->thetaY;
+			ballReversePacket << invertedBallXAngle << ballYAngle;
+
+			mSocket.send(ballReversePacket);
 			//reset flag
 			world->ballCollide = false;
 		}

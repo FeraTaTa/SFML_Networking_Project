@@ -107,6 +107,9 @@ void Server::tick()
 		sendToClient(ballReversePacket);
 		std::cout << "server send ballReverse" << std::endl;
 
+		float invertedBallXAngle = -1 * world->ballObj->thetaX;
+		float ballYAngle = world->ballObj->thetaY;
+		ballReversePacket << invertedBallXAngle << ballYAngle;
 		//reset flag
 		world->ballCollide = false;
 	}
@@ -121,9 +124,6 @@ void Server::tick()
 
 		//sf::Packet ballDataPacket;
 		//create a packet that holds information about the ball
-		bool isIdle;
-		isIdle = world->ballObj->isIdle;
-		serverInfoPacket << isIdle;
 
 		//send packet
 		sendToClient(serverInfoPacket);
@@ -169,7 +169,7 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 					{
 						world->ballObj->toggleDirection();
 						std::cout << "server receive ballReverse" << std::endl;
-
+						packet >> world->ballObj->thetaX >> world->ballObj->thetaY;
 					} break;
 
 				}

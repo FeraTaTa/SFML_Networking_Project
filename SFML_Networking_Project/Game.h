@@ -68,6 +68,7 @@ public:
 	sf::Vector2f Interpolate(const sf::Vector2f& pointA, const sf::Vector2f& pointB, float factor);
 	bool isBallPaddleCollision();
 	bool isBallAtHitDepth(bool isHost);
+	void calculateNewBallAngle(Ball* ball);
 };
 
 #endif

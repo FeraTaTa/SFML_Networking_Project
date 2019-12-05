@@ -9,6 +9,8 @@ const float BALLSTARTDEPTH = SERVERDEPTH;
 const int TOWARDSERVER = -1;
 const int TOWARDCLIENT = 1;
 
+const float CONVERTTORADIANS = 3.14159265359 / 180;
+
 	class GameState :
 	public State
 {

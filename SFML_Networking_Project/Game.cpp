@@ -135,7 +135,7 @@ void Game::update()
 			ballObj->toggleDirection();
 			//set bool which will send packet to change direction of the ball
 			ballCollide = true;
-			std::cout << "ball collide in: " << (isHost? "host ":"client ") << std::endl;
+			std::cout << "ball collide in: " << (isHost? "host ":"client ") << " at depth: " << ballObj->zDepth << std::endl;
 			calculateNewBallAngle(ballObj);
 
 		}
@@ -200,7 +200,7 @@ void Game::calculateNewBallAngle(Ball* ball)
 	}
 	//if the y component of the offset is positive that means the ball is on the top
 	//side of the paddle and a proportionally negative angle should be applied to the ball
-	else if (offset.x > 0) {
+	else if (offset.y > 0) {
 		ball->thetaY -= offset.y * proportionalFactor * 1;
 	}
 	//limit the angles to -80 to 80 degrees

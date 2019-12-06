@@ -14,7 +14,6 @@ private:
 
 
 	//variables
-	sf::RenderWindow *window;
 	sf::Event sfEvent;
 	
 	sf::Clock dtClock;
@@ -42,6 +41,7 @@ public:
 	//constructor/destructor
 	Game();
 	virtual ~Game();
+	sf::RenderWindow *window;
 
 	sf::CircleShape* gameBall;
 	Ball* ballObj;

@@ -320,6 +320,8 @@ void Game::selectNetworkState()
 void Game::startNetwork()
 {
 	sf::IpAddress ip;
+	sf::IpAddress localHost = "127.0.0.1";
+	sf::IpAddress RohanIP = "10.10.10.164";
 	sf::IpAddress desktopIP = "192.168.0.10";
 	sf::IpAddress laptopIP = "192.168.0.14";
 	if (isHost) {

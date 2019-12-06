@@ -107,7 +107,8 @@ void Server::tick()
 		ballReversePacket << static_cast<sf::Int32>(packetServer::BallReverse);
 		//send the ball xyz position and the angle it's travelling at when colliding locally
 		sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
-		ballReversePacket << ballPosition.x << ballPosition.y << ballObject->zDepth;
+		float invertedBallPosX = -1 * ballPosition.x;
+		ballReversePacket << invertedBallPosX << ballPosition.y << ballObject->zDepth;
 
 		float invertedBallXAngle = -1 * ballObject->thetaX;
 		float ballYAngle = ballObject->thetaY;

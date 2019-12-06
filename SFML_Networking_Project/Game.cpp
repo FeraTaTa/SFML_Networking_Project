@@ -38,6 +38,7 @@ Game::Game()
 	gameBall = NULL;
 	ballCollide = false;
 	gameStart = false;
+	dt = dt.Zero;
 	this->selectNetworkState();
 	this->initWindow();
 	this->setupGameObjects();

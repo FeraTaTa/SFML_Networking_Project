@@ -19,6 +19,8 @@ private:
 	sf::Time mClientTimeout;
 	sf::Clock					mTickClock;
 	sf::Thread			mThread;
+	bool				mWaitingThreadEnd;
+
 	Game* world;
 
 	PaddleInfo clientPaddle;

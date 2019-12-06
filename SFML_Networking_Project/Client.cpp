@@ -121,7 +121,7 @@ void Client::update()
 				ballReversePacket << invertedBallXAngle << ballYAngle;
 				//send the ball xyz position and the angle it's travelling at when colliding locally
 				sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
-				float invertedBallPosX = -1 * ballPosition.x;
+				float invertedBallPosX = ARENADEPTH - ballPosition.x;
 				ballReversePacket << invertedBallPosX << ballPosition.y << ballObject->zDepth;
 
 				mSocket.send(ballReversePacket);

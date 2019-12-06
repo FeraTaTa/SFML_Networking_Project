@@ -108,13 +108,12 @@ void Server::tick()
 		//send the ball xyz position and the angle it's travelling at when colliding locally
 		sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
 		ballReversePacket << ballPosition.x << ballPosition.y << ballObject->zDepth;
-		ballReversePacket << ballObject->thetaX << ballObject->thetaY;
 
-		sendToClient(ballReversePacket);
-		std::cout << "server send ballReverse" << std::endl;
 		float invertedBallXAngle = -1 * ballObject->thetaX;
 		float ballYAngle = ballObject->thetaY;
 		ballReversePacket << invertedBallXAngle << ballYAngle;
+		sendToClient(ballReversePacket);
+		std::cout << "server send ballReverse" << std::endl;
 		//reset flag
 		world->ballCollide = false;
 	}
@@ -179,7 +178,6 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 						sf::CircleShape* ball = ballObject->getBall();
 						float ballCollisionX, ballCollisionY;
 						packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
-						packet >> ballObject->thetaX >> ballObject->thetaY;
 						ball->setPosition(ballCollisionX, ballCollisionY);
 
 					} break;

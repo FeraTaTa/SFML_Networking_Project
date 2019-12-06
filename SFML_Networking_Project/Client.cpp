@@ -42,7 +42,6 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 			sf::CircleShape* ball = ballObject->getBall();
 			float ballCollisionX, ballCollisionY;
 			packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
-			packet >> ballObject->thetaX >> ballObject->thetaY;
 			ball->setPosition(ballCollisionX, ballCollisionY);
 
 		} break;
@@ -123,7 +122,6 @@ void Client::update()
 				//send the ball xyz position and the angle it's travelling at when colliding locally
 				sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
 				ballReversePacket << ballPosition.x << ballPosition.y << ballObject->zDepth;
-				ballReversePacket << ballObject->thetaX << ballObject->thetaY;
 
 				mSocket.send(ballReversePacket);
 				//reset flag

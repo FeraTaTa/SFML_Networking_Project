@@ -2,6 +2,7 @@
 #include "GameState.h"
 
 class Game; // Say foo exists without defining it.
+class Ball;
 
 //class Game {
 //public:
@@ -22,6 +23,7 @@ private:
 	bool				mWaitingThreadEnd;
 
 	Game* world;
+	Ball* ballObject;
 
 	PaddleInfo clientPaddle;
 	PaddleInfo serverPaddle;

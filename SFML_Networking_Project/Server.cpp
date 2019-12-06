@@ -13,6 +13,7 @@ Server::Server(sf::IpAddress ip, unsigned short ServerPort, sf::Vector2u battlef
 		, mBattleFieldRect(0.f, 0.f, battlefieldSize.x, battlefieldSize.y)
 	{
 		world = &game;
+		ballObject = world->ballObj;
 		mListenerSocket.setBlocking(false);
 		mPeer.reset(new RemotePeer());
 		mThread.launch();
@@ -88,9 +89,9 @@ void Server::tick()
 		sf::Packet gameStartPacket;
 		gameStartPacket << static_cast<sf::Int32>(packetServer::StartGame);
 
-		bool isIdle = world->ballObj->isIdle;
-		float invertedBallXAngle = -1 * world->ballObj->thetaX;
-		float ballYAngle = world->ballObj->thetaY;
+		bool isIdle = ballObject->isIdle;
+		float invertedBallXAngle = -1 * ballObject->thetaX;
+		float ballYAngle = ballObject->thetaY;
 
 		gameStartPacket << isIdle << invertedBallXAngle << ballYAngle;
 		sendToClient(gameStartPacket);
@@ -106,9 +107,8 @@ void Server::tick()
 		ballReversePacket << static_cast<sf::Int32>(packetServer::BallReverse);
 		sendToClient(ballReversePacket);
 		std::cout << "server send ballReverse" << std::endl;
-
-		float invertedBallXAngle = -1 * world->ballObj->thetaX;
-		float ballYAngle = world->ballObj->thetaY;
+		float invertedBallXAngle = -1 * ballObject->thetaX;
+		float ballYAngle = ballObject->thetaY;
 		ballReversePacket << invertedBallXAngle << ballYAngle;
 		//reset flag
 		world->ballCollide = false;
@@ -167,9 +167,9 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 
 					case packetClient::BallReverse:
 					{
-						world->ballObj->toggleDirection();
+						ballObject->toggleDirection();
 						std::cout << "server receive ballReverse" << std::endl;
-						packet >> world->ballObj->thetaX >> world->ballObj->thetaY;
+						packet >> ballObject->thetaX >> ballObject->thetaY;
 					} break;
 
 				}

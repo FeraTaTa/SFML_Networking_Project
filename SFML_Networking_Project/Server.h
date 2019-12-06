@@ -2,6 +2,7 @@
 #include "GameState.h"
 
 class Game;
+class Ball;
 
 class Server
 {
@@ -21,6 +22,7 @@ private:
 	sf::Time							mClientTimeoutTime;
 
 	Game* world;
+	Ball* ballObject;
 
 	// A GameServerRemotePeer refers to one instance of the game, may it be local or from another computer
 	struct RemotePeer

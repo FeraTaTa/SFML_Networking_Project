@@ -8,6 +8,7 @@ Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game):
 	mTimeSinceLastPacket(sf::seconds(0.f))
 {
 	world = &game;
+	ballObject = world->ballObj;
 	//std::cout << "client constructor" << std::endl;
 	if (mSocket.connect(ip, ServerPort, sf::seconds(5.f)) == sf::TcpSocket::Done) {
 		mConnected = true;
@@ -33,9 +34,9 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 	{
 		case packetServer::BallReverse:
 		{
-			world->ballObj->toggleDirection();
+			ballObject->toggleDirection();
 			std::cout << "client receive ballReverse" << std::endl;
-			packet >> world->ballObj->thetaX >> world->ballObj->thetaY;
+			packet >> ballObject->thetaX >> ballObject->thetaY;
 
 		} break;
 		case packetServer::UpdateClientState:
@@ -51,9 +52,9 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 		{
 			bool isBallIdle;
 			packet >> isBallIdle;
-			world->ballObj->isIdle = isBallIdle;
+			ballObject->isIdle = isBallIdle;
 
-			packet >> world->ballObj->thetaX >> world->ballObj->thetaY;
+			packet >> ballObject->thetaX >> ballObject->thetaY;
 			
 		}
 		

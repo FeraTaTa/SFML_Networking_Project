@@ -181,28 +181,30 @@ void Game::calculateNewBallAngle(Ball* ball)
 	std::cout << "prev thetaX = " << ball->thetaX << std::endl;
 	std::cout << "prev thetaY = " << ball->thetaY << std::endl;
 	//find the vector between my paddle and the balls current position
-	sf::Vector2f offset = myPaddle.getPosition() - gameBall->getPosition();
+	sf::Vector2f offsetBallToPaddle = myPaddle.getPosition() - gameBall->getPosition();
 	float proportionalFactor = 1.0f;
 	//if the x component of the offset is negative that means the ball is on the right 
 	//side of the paddle and a proportionally positive angle should be applied to the ball
-	if (offset.x < 0) {
-		ball->thetaX += offset.x * proportionalFactor * 1;
+	if (offsetBallToPaddle.x < 0) {
+		//since offset is already negative in this case negate it to increment angle
+		ball->thetaX -= offsetBallToPaddle.x * proportionalFactor * 1;
 	}
 	//if the x component of the offset is positive that means the ball is on the left 
 	//side of the paddle and a proportionally negative angle should be applied to the ball
-	else if (offset.x > 0) {
-		ball->thetaX -= offset.x * proportionalFactor * 1;
+	else if (offsetBallToPaddle.x > 0) {
+		ball->thetaX -= offsetBallToPaddle.x * proportionalFactor * 1;
 
 	}
 	//if the y component of the offset is negative that means the ball is on the bottom
 	//side of the paddle and a proportionally positive angle should be applied to the ball
-	if (offset.y < 0) {
-		ball->thetaY += offset.y * proportionalFactor * 1;
+	if (offsetBallToPaddle.y < 0) {
+		//since offset is already negative in this case negate it to increment angle
+		ball->thetaY -= offsetBallToPaddle.y * proportionalFactor * 1;
 	}
 	//if the y component of the offset is positive that means the ball is on the top
 	//side of the paddle and a proportionally negative angle should be applied to the ball
-	else if (offset.y > 0) {
-		ball->thetaY -= offset.y * proportionalFactor * 1;
+	else if (offsetBallToPaddle.y > 0) {
+		ball->thetaY -= offsetBallToPaddle.y * proportionalFactor * 1;
 	}
 	//limit the angles to -MAXBALLANGLE to MAXBALLANGLE degrees
 	ball->thetaX = fmax(ball->thetaX, -MAXBALLANGLE);
@@ -210,7 +212,7 @@ void Game::calculateNewBallAngle(Ball* ball)
 	ball->thetaY = fmax(ball->thetaY, -MAXBALLANGLE);
 	ball->thetaY = fmin(ball->thetaY, MAXBALLANGLE);
 
-	std::cout << "x offset= " << offset.x << " y offset = " << offset.y << std::endl;
+	std::cout << "x offset= " << offsetBallToPaddle.x << " y offset = " << offsetBallToPaddle.y << std::endl;
 	std::cout << "new thetaX = " << ball->thetaX << std::endl;
 	std::cout << "new thetaY = " << ball->thetaY << std::endl << std::endl;
 }

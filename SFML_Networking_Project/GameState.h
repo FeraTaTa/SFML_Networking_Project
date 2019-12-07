@@ -11,6 +11,8 @@ const int TOWARDCLIENT = 1;
 
 const float CONVERTTORADIANS = 3.14159265359 / 180;
 
+const float MAXBALLANGLE = 65.f;
+
 	class GameState :
 	public State
 {

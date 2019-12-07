@@ -204,11 +204,11 @@ void Game::calculateNewBallAngle(Ball* ball)
 	else if (offset.y > 0) {
 		ball->thetaY -= offset.y * proportionalFactor * 1;
 	}
-	//limit the angles to -80 to 80 degrees
-	ball->thetaX = fmax(ball->thetaX, -80.f);
-	ball->thetaX = fmin(ball->thetaX, 80.f);
-	ball->thetaY = fmax(ball->thetaY, -80.f);
-	ball->thetaY = fmin(ball->thetaY, 80.f);
+	//limit the angles to -MAXBALLANGLE to MAXBALLANGLE degrees
+	ball->thetaX = fmax(ball->thetaX, -MAXBALLANGLE);
+	ball->thetaX = fmin(ball->thetaX, MAXBALLANGLE);
+	ball->thetaY = fmax(ball->thetaY, -MAXBALLANGLE);
+	ball->thetaY = fmin(ball->thetaY, MAXBALLANGLE);
 
 	std::cout << "x offset= " << offset.x << " y offset = " << offset.y << std::endl;
 	std::cout << "new thetaX = " << ball->thetaX << std::endl;

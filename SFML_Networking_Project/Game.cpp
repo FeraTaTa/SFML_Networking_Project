@@ -392,4 +392,7 @@ void Game::setupGameObjects()
 	//set paddle position to the centre of the window
 	enemyPaddle.setPosition(windowSize.x / 2, windowSize.y / 2);
 	enemyPaddle.setColor(translucent);
+
+	float paddleScale = 0.5f;
+	enemyPaddle.setScale(paddleScale, paddleScale);
 }

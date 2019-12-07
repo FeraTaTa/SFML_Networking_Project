@@ -13,7 +13,7 @@ const float CONVERTTORADIANS = 3.14159265359 / 180;
 
 const float MAXBALLANGLE = 65.f;
 
-	class GameState :
+class GameState :
 	public State
 {
 private:

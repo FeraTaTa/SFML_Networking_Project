@@ -1,7 +1,7 @@
 #include "Client.h"
 #include "Game.h"
 
-Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game):
+Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game) :
 	mThread(&Client::update, this),
 	mWaitingThreadEnd(false),
 	mClientTimeout(sf::seconds(2.f)),
@@ -17,7 +17,7 @@ Client::Client(sf::IpAddress ip, unsigned short ServerPort, Game& game):
 	else
 		//mFailedConnectionClock.restart();
 
-	mSocket.setBlocking(false);
+		mSocket.setBlocking(false);
 	mThread.launch();
 }
 
@@ -32,39 +32,39 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 {
 	switch (packetType)
 	{
-		case packetServer::BallReverse:
-		{
-			ballObject->toggleDirection();
-			std::cout << "client receive ballReverse" << std::endl;
-			packet >> ballObject->thetaX >> ballObject->thetaY;
-			
-			//receive the ball xyz position and the angle it's travelling at when colliding on the opponent side
-			sf::CircleShape* ball = ballObject->getBall();
-			float ballCollisionX, ballCollisionY;
-			packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
-			ball->setPosition(ballCollisionX, ballCollisionY);
-			std::cout << "CLRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
+	case packetServer::BallReverse:
+	{
+		ballObject->toggleDirection();
+		std::cout << "client receive ballReverse" << std::endl;
+		packet >> ballObject->thetaX >> ballObject->thetaY;
 
-		} break;
-		case packetServer::UpdateClientState:
-		{
-			sf::Vector2f paddlePositionUpdate;
-			packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
-			sf::Vector2f currentPaddlePos(world->getEnemyPaddlePosition());
-			world->setEnemyPaddlePosition(paddlePositionUpdate);
+		//receive the ball xyz position and the angle it's travelling at when colliding on the opponent side
+		sf::CircleShape* ball = ballObject->getBall();
+		float ballCollisionX, ballCollisionY;
+		packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
+		ball->setPosition(ballCollisionX, ballCollisionY);
+		std::cout << "CLRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
 
-			//float scale
-		} break;
-		case packetServer::StartGame:
-		{
-			bool isBallIdle;
-			packet >> isBallIdle;
-			ballObject->isIdle = isBallIdle;
+	} break;
+	case packetServer::UpdateClientState:
+	{
+		sf::Vector2f paddlePositionUpdate;
+		packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
+		sf::Vector2f currentPaddlePos(world->getEnemyPaddlePosition());
+		world->setEnemyPaddlePosition(paddlePositionUpdate);
 
-			packet >> ballObject->thetaX >> ballObject->thetaY;
-			
-		}
-		
+		//float scale
+	} break;
+	case packetServer::StartGame:
+	{
+		bool isBallIdle;
+		packet >> isBallIdle;
+		ballObject->isIdle = isBallIdle;
+
+		packet >> ballObject->thetaX >> ballObject->thetaY;
+
+	}
+
 
 	}
 }
@@ -133,5 +133,5 @@ void Client::update()
 			mTimeSinceLastPacket += dt;
 		}
 	}
-	
+
 }

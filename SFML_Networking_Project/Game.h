@@ -11,8 +11,6 @@ const float PADDLESPEED = 10.f;
 class Game
 {
 private:
-
-
 	//variables
 	sf::Event sfEvent;
 	sf::IpAddress connectToIP;
@@ -20,7 +18,6 @@ private:
 	sf::Time dt;
 	sf::Vector2f mousePos;
 	sf::Vector2f nextEnemyPaddlePosition;
-	//std::vector<sf::CircleShape> listOfCircles;
 
 	sf::Texture bluPaddle;
 	sf::Texture redPaddle;

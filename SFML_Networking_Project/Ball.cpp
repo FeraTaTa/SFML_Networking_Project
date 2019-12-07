@@ -2,7 +2,7 @@
 #include <math.h>
 
 
-Ball::Ball(sf::Vector2f windowSize, bool isHost):
+Ball::Ball(sf::Vector2f windowSize, bool isHost) :
 	ballRadius(80.f),
 	ballForwardSpeed(STARTINGBALLSPEED),
 	zDepthSpeed(STARTINGBALLSPEED),
@@ -46,10 +46,10 @@ Ball::~Ball()
 void Ball::update(sf::Time dt)
 {
 	//if the ball has been clicked then start the movement loop
-	
+
 	if (!isIdle) {
 		//calculate the required depth scaling
-		zDepth += calcDepthMoveSpeed() * dt.asSeconds() * (directionTowardsPlayer? myDirection : enemyDirection);
+		zDepth += calcDepthMoveSpeed() * dt.asSeconds() * (directionTowardsPlayer ? myDirection : enemyDirection);
 		//limits between 0 and the maximum depth of the arena
 		zDepth = fmax(0, zDepth);
 		zDepth = fmin(ARENADEPTH, zDepth);
@@ -59,7 +59,7 @@ void Ball::update(sf::Time dt)
 		if (isHost) {
 			scaleFactor = 1.0f - (zDepth / ARENADEPTH);
 		}
-		else{
+		else {
 			scaleFactor = (zDepth / ARENADEPTH);
 		}
 
@@ -72,7 +72,7 @@ void Ball::update(sf::Time dt)
 		ball.move(calcXYMoveComponents(dt));
 
 		//std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
-		
+
 		//if (zDepth == ARENADEPTH || zDepth == 0) {
 		//	isIdle = true;
 		//	ball.setFillColor(sf::Color::Red);
@@ -88,13 +88,13 @@ sf::CircleShape* Ball::getBall()
 sf::Vector2f Ball::calcXYMoveComponents(sf::Time dt)
 {
 	sf::Vector2f xyMoveValues(ballForwardSpeed*dt.asSeconds() * sin(thetaX * CONVERTTORADIANS),
-								ballForwardSpeed*dt.asSeconds() * sin(thetaY * CONVERTTORADIANS));
+		ballForwardSpeed*dt.asSeconds() * sin(thetaY * CONVERTTORADIANS));
 	return xyMoveValues;
 }
 
 float Ball::calcDepthMoveSpeed()
 {
-	zDepthSpeed = ballForwardSpeed * ( cos(thetaX * CONVERTTORADIANS) + cos(thetaY * CONVERTTORADIANS) );
+	zDepthSpeed = ballForwardSpeed * (cos(thetaX * CONVERTTORADIANS) + cos(thetaY * CONVERTTORADIANS));
 	return zDepthSpeed;
 }
 
@@ -137,8 +137,8 @@ bool Ball::isBallEdgeCollide(float ballAtDepth)
 		ball.setPosition(ballPos.x, winHeight - radius);
 		thetaY *= -1;
 		std::cout << "reflect in y axis bottom of window" << std::endl;
-		std::cout << "ball limited to: " << ballPos.y << " Current angle is : " << thetaY << " at depth: "<< zDepth<< std::endl;
-	}                                                                           
+		std::cout << "ball limited to: " << ballPos.y << " Current angle is : " << thetaY << " at depth: " << zDepth << std::endl;
+	}
 	else if (ballPos.y - radius < 0) {
 		ball.setPosition(ballPos.x, radius);
 		thetaY *= -1;

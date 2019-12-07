@@ -2,22 +2,22 @@
 #include "Game.h"
 
 
-Server::Server(sf::IpAddress ip, unsigned short ServerPort, sf::Vector2u battlefieldSize, Game& game):
-	mThread(&Server::executionThread, this)
-		, mMaxConnectedPlayers(1)
-		, mPeer()
-		, mConnectedPlayers(0)
-		, mWaitingThreadEnd(false)
-		, mListeningState(false)
-		, mClientTimeoutTime(sf::seconds(3.f))
-		, mBattleFieldRect(0.f, 0.f, battlefieldSize.x, battlefieldSize.y)
-	{
-		world = &game;
-		ballObject = world->ballObj;
-		mListenerSocket.setBlocking(false);
-		mPeer.reset(new RemotePeer());
-		mThread.launch();
-	}
+Server::Server(sf::IpAddress ip, unsigned short ServerPort, sf::Vector2u battlefieldSize, Game& game) :
+	mThread(&Server::executionThread, this), 
+	mMaxConnectedPlayers(1), 
+	mPeer(), 
+	mConnectedPlayers(0), 
+	mWaitingThreadEnd(false), 
+	mListeningState(false), 
+	mClientTimeoutTime(sf::seconds(3.f)), 
+	mBattleFieldRect(0.f, 0.f, battlefieldSize.x, battlefieldSize.y)
+{
+	world = &game;
+	ballObject = world->ballObj;
+	mListenerSocket.setBlocking(false);
+	mPeer.reset(new RemotePeer());
+	mThread.launch();
+}
 
 Server::~Server()
 {
@@ -97,7 +97,6 @@ void Server::tick()
 		sendToClient(gameStartPacket);
 
 		world->gameStart = false;
-
 	}
 
 	//if ball collide flag set then change direction
@@ -128,10 +127,6 @@ void Server::tick()
 		sf::Vector2f myPaddlePosition(world->getMyPaddlePositon());
 		//create a packet with the correct type and info
 		serverInfoPacket << packetServer::UpdateClientState << myPaddlePosition.x << myPaddlePosition.y;
-
-		//sf::Packet ballDataPacket;
-		//create a packet that holds information about the ball
-
 		//send packet
 		sendToClient(serverInfoPacket);
 	}
@@ -147,58 +142,58 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 {
 	bool detectedTimeout = false;
 
-		if (mPeer->ready)
+	if (mPeer->ready)
+	{
+		sf::Packet packet;
+		while (mPeer->socket.receive(packet) == sf::Socket::Done)
 		{
-			sf::Packet packet;
-			while (mPeer->socket.receive(packet) == sf::Socket::Done)
-			{
-				// Interpret packet and react to it
-				sf::Int32 packetType;
-				packet >> packetType;
+			// Interpret packet and react to it
+			sf::Int32 packetType;
+			packet >> packetType;
 
-				switch (packetType)
+			switch (packetType)
+			{
+				case packetClient::Quit:
 				{
-					case packetClient::Quit:
-					{
-						std::cout << "quit" << std::endl;
-						receivingPeer.timedOut = true;
-						detectedTimeout = true;
-					} break;
-
-					case packetClient::PositionUpdate:
-					{
-						sf::Vector2f paddlePositionUpdate;
-						packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
-						world->setEnemyPaddlePosition(paddlePositionUpdate);
-					} break;
-
-					case packetClient::BallReverse:
-					{
-						ballObject->toggleDirection();
-						std::cout << "server receive ballReverse" << std::endl;
-						packet >> ballObject->thetaX >> ballObject->thetaY;
-						//receive the ball xyz position and the angle it's travelling at when colliding on the opponent side
-						sf::CircleShape* ball = ballObject->getBall();
-						float ballCollisionX, ballCollisionY;
-						packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
-						ball->setPosition(ballCollisionX, ballCollisionY);
-						std::cout << "SVRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
-					} break;
-
+					std::cout << "quit" << std::endl;
+					receivingPeer.timedOut = true;
+					detectedTimeout = true;
+					break;
+				} 
+				case packetClient::PositionUpdate:
+				{
+					sf::Vector2f paddlePositionUpdate;
+					packet >> paddlePositionUpdate.x >> paddlePositionUpdate.y;
+					world->setEnemyPaddlePosition(paddlePositionUpdate);
+					break;
 				}
-				// Packet was indeed received, update the ping timer
-				mPeer->lastPacketTime = now();
-				packet.clear();
+				case packetClient::BallReverse:
+				{
+					ballObject->toggleDirection();
+					std::cout << "server receive ballReverse" << std::endl;
+					packet >> ballObject->thetaX >> ballObject->thetaY;
+					//receive the ball xyz position and the angle it's travelling at when colliding on the opponent side
+					sf::CircleShape* ball = ballObject->getBall();
+					float ballCollisionX, ballCollisionY;
+					packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
+					ball->setPosition(ballCollisionX, ballCollisionY);
+					std::cout << "SVRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
+					break;
+				} 
 			}
-
-			if (now() >= mPeer->lastPacketTime + mClientTimeoutTime)
-			{
-				std::cout << "time out" << std::endl;
-				mPeer->timedOut = true;
-				mPeer->ready = false;
-				detectedTimeout = true;
-			}
+			// Packet was indeed received, update the ping timer
+			mPeer->lastPacketTime = now();
+			packet.clear();
 		}
+
+		if (now() >= mPeer->lastPacketTime + mClientTimeoutTime)
+		{
+			std::cout << "time out" << std::endl;
+			mPeer->timedOut = true;
+			mPeer->ready = false;
+			detectedTimeout = true;
+		}
+	}
 
 	if (detectedTimeout)
 		handleDisconnections();
@@ -239,9 +234,9 @@ void Server::sendToClient(sf::Packet& packet)
 	}
 }
 
-Server::RemotePeer::RemotePeer()
-	: ready(false)
-	, timedOut(false)
+Server::RemotePeer::RemotePeer(): 
+	ready(false), 
+	timedOut(false)
 {
 	socket.setBlocking(false);
 }

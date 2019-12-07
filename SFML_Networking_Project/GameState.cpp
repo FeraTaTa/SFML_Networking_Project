@@ -1,18 +1,13 @@
 #include "GameState.h"
 
-
-
 GameState::GameState(sf::RenderWindow* window)
 	:State(window)
 {
 }
 
-
 GameState::~GameState()
 {
 }
-
-
 
 void GameState::updateKeybinds(const float & dt)
 {
@@ -22,7 +17,6 @@ void GameState::updateKeybinds(const float & dt)
 void GameState::update(const float dt)
 {
 	this->updateKeybinds(dt);
-	//std::cout << "Gamestate hello";
 }
 
 void GameState::render(sf::RenderTarget* target)

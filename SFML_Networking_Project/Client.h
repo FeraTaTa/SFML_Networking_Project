@@ -1,26 +1,19 @@
 #pragma once
 #include "GameState.h"
 
-class Game; // Say foo exists without defining it.
+class Game;
 class Ball;
-
-//class Game {
-//public:
-//	Game* getGame();
-//protected:
-//	Game* gameWorld;
-//};
 
 class Client
 {
 private:
 	bool mConnected;
-	sf::TcpSocket				mSocket;
+	sf::TcpSocket mSocket;
 	sf::Time mTimeSinceLastPacket;
 	sf::Time mClientTimeout;
-	sf::Clock					mTickClock;
-	sf::Thread			mThread;
-	bool				mWaitingThreadEnd;
+	sf::Clock mTickClock;
+	sf::Thread mThread;
+	bool mWaitingThreadEnd;
 
 	Game* world;
 	Ball* ballObject;
@@ -31,7 +24,7 @@ private:
 public:
 	Client(sf::IpAddress ip, unsigned short ServerPort, Game& game);
 	virtual ~Client();
-	
+
 	void handlePacket(sf::Int32 packetType, sf::Packet& packet);
 	void update();
 };

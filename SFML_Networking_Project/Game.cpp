@@ -7,7 +7,7 @@ void Game::initWindow()
 {
 	//creates an SFML window using options from window.ini file.
 	std::ifstream ifs("Config/window.ini");
-	sf::VideoMode window_bounds(800,600);
+	sf::VideoMode window_bounds(800, 600);
 	std::string title = "None";
 	unsigned framerate_limit = 120;
 	bool vertical_sync_enabled = false;
@@ -21,11 +21,11 @@ void Game::initWindow()
 		ifs >> connectToIP;
 	}
 	ifs.close();
-	
+
 	this->window = new sf::RenderWindow(window_bounds, title, sf::Style::Close);
 	this->window->setFramerateLimit(framerate_limit);
 	this->window->setVerticalSyncEnabled(vertical_sync_enabled);
-	
+
 }
 
 void Game::initStates()
@@ -93,15 +93,15 @@ void Game::update()
 	sf::Vector2f postoMove;
 
 	if (mousePos.x + paddleWidth / 2 > windowSize.x) {
-		postoMove.x = windowSize.x - paddleWidth/2;
+		postoMove.x = windowSize.x - paddleWidth / 2;
 	}
 	else if (mousePos.x - paddleWidth / 2 < 0) {
 		postoMove.x = paddleWidth / 2;
 	}
 	else {
 		postoMove.x = mousePos.x;
-	}	
-	
+	}
+
 
 	if (mousePos.y + paddleHeight / 2 > windowSize.y) {
 		postoMove.y = windowSize.y - paddleHeight / 2;
@@ -112,7 +112,7 @@ void Game::update()
 	else {
 		postoMove.y = mousePos.y;
 	}
-	
+
 
 	//is it the beginning of a round and the player clicked the ball to start the round
 	if (ballObj->isIdle && playerClicked) {
@@ -126,19 +126,19 @@ void Game::update()
 
 	myPaddle.setPosition(postoMove.x, postoMove.y);
 	//std::cout << nextEnemyPaddlePosition.x << nextEnemyPaddlePosition.y << std::endl;
-	enemyPaddle.setPosition(Interpolate(enemyPaddle.getPosition(),nextEnemyPaddlePosition, dt.asSeconds() * PADDLESPEED));
+	enemyPaddle.setPosition(Interpolate(enemyPaddle.getPosition(), nextEnemyPaddlePosition, dt.asSeconds() * PADDLESPEED));
 
 
 	//if the ball is moving and its towards the player
 	if (!ballObj->isIdle && ballObj->directionTowardsPlayer) {
 		//does my paddle collide with the ball when it reaches my paddle
-		if (isBallPaddleCollision()  && isBallAtHitDepth(isHost)){ 
+		if (isBallPaddleCollision() && isBallAtHitDepth(isHost)) {
 
 			//hit the ball and change it's direction
 			ballObj->toggleDirection();
 			//set bool which will send packet to change direction of the ball
 			ballCollide = true;
-			std::cout << "ball collide in: " << (isHost? "host ":"client ") << " at depth: " << ballObj->zDepth << std::endl;
+			std::cout << "ball collide in: " << (isHost ? "host " : "client ") << " at depth: " << ballObj->zDepth << std::endl;
 			calculateNewBallAngle(ballObj);
 
 		}
@@ -146,14 +146,14 @@ void Game::update()
 		//spawn ball in front of server
 		//if the ball reaches 0 client scored a point
 		//spawn ball in front of client
-		
+
 		//TODO if ball behind paddle you lose
 	}
 	//BALL UPDATE
 	ballObj->update(dt);
 }
 
-sf::Vector2f Game::Interpolate(const sf::Vector2f& pointA,const sf::Vector2f& pointB,	float factor) {
+sf::Vector2f Game::Interpolate(const sf::Vector2f& pointA, const sf::Vector2f& pointB, float factor) {
 	if (factor > 1.f)
 		factor = 1.f;
 
@@ -269,7 +269,7 @@ sf::Vector2f Game::getMyPaddlePositon() {
 void Game::render()
 {
 	this->window->clear();
-	
+
 	//render items
 	if (!this->states.empty()) {
 		this->states.top()->render();
@@ -290,7 +290,7 @@ void Game::run()
 		this->updateDT();
 		if (isHost) {
 			//server loop is other thread
-			
+
 		}
 		else {
 			//client loop
@@ -318,7 +318,7 @@ void Game::selectNetworkState()
 		}
 		std::cout << "Invalid input, try again. \n";
 	} while (true);
-	std::cout << netState << " " << "Server = "<< std::boolalpha << isHost << std::noboolalpha << std::endl;
+	std::cout << netState << " " << "Server = " << std::boolalpha << isHost << std::noboolalpha << std::endl;
 }
 
 void Game::startNetwork()
@@ -352,7 +352,7 @@ void Game::startNetwork()
 		myGoalDepth = ARENADEPTH;
 		mGameClient.reset(new Client(ip, ServerPort, *this));
 	}
-	
+
 }
 
 void Game::setupGameObjects()
@@ -379,7 +379,7 @@ void Game::setupGameObjects()
 	myPaddle.setOrigin((bluSpriteSize.x / 2), (bluSpriteSize.y / 2));
 	myPaddle.setPosition(windowSize.x / 2, windowSize.y / 2);
 	myPaddle.setColor(translucent);
-	
+
 	//setup enemy paddle
 	if (!redPaddle.loadFromFile("Resources/redPaddle.png")) {
 		std::cout << "failed to load sprite" << std::endl;

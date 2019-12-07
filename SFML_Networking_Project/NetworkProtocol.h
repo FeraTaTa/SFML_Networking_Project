@@ -14,8 +14,9 @@ namespace packetClient
 	enum PacketType
 	{
 		StartGame,
-		BallReverse,
 		PositionUpdate,
+		BallReverse,
+		BallMissed,
 		Quit
 	};
 }
@@ -30,6 +31,6 @@ namespace packetServer
 		StartGame,
 		BallReverse,
 		UpdateClientState,
-		MissionSuccess
+		BallMissed
 	};
 }

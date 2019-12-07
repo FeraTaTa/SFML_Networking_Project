@@ -15,7 +15,7 @@ private:
 
 	//variables
 	sf::Event sfEvent;
-	
+	sf::IpAddress connectToIP;
 	sf::Clock dtClock;
 	sf::Time dt;
 	sf::Vector2f mousePos;

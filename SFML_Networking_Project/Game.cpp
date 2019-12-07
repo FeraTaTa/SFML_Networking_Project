@@ -11,12 +11,14 @@ void Game::initWindow()
 	std::string title = "None";
 	unsigned framerate_limit = 120;
 	bool vertical_sync_enabled = false;
+	connectToIP.None;
 
 	if (ifs.is_open()) {
 		std::getline(ifs, title);
 		ifs >> window_bounds.width >> window_bounds.height;
 		ifs >> framerate_limit;
 		ifs >> vertical_sync_enabled;
+		ifs >> connectToIP;
 	}
 	ifs.close();
 	
@@ -326,13 +328,17 @@ void Game::startNetwork()
 	sf::IpAddress RohanIP = "10.10.10.164";
 	sf::IpAddress desktopIP = "192.168.0.10";
 	sf::IpAddress laptopIP = "192.168.0.14";
+	if (connectToIP == connectToIP.None) {
+		ip = localHost;
+	}
+	else {
+		ip = connectToIP;
+	}
 	if (isHost) {
 		//start server thread
 		//myPaddle = serverpaddle - pass this info
 		//enemypaddle = client paddle
 		window->setTitle("Server");
-		//ip = "127.0.0.1";
-		ip = desktopIP;
 		myDepth = SERVERDEPTH;
 		myGoalDepth = 0;
 		mGameServer.reset(new Server(ip, ServerPort, window->getSize(), *this));
@@ -342,8 +348,6 @@ void Game::startNetwork()
 		//myPaddle = client paddle - pass this info
 		//enemypaddle = serverpaddle
 		window->setTitle("Client");
-		//ip = "127.0.0.1";
-		ip = desktopIP;
 		myDepth = CLIENTDEPTH;
 		myGoalDepth = ARENADEPTH;
 		mGameClient.reset(new Client(ip, ServerPort, *this));

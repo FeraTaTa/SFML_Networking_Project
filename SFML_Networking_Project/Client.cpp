@@ -43,6 +43,7 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 			float ballCollisionX, ballCollisionY;
 			packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
 			ball->setPosition(ballCollisionX, ballCollisionY);
+			std::cout << "CLRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
 
 		} break;
 		case packetServer::UpdateClientState:
@@ -123,7 +124,7 @@ void Client::update()
 				sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
 				float invertedBallPosX = world->window->getSize().x - ballPosition.x;
 				ballReversePacket << invertedBallPosX << ballPosition.y << ballObject->zDepth;
-
+				std::cout << "CLTX - x:" << invertedBallPosX << " y:" << ballPosition.y << std::endl;
 				mSocket.send(ballReversePacket);
 				//reset flag
 				world->ballCollide = false;

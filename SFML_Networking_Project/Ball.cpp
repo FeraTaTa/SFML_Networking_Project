@@ -71,7 +71,7 @@ void Ball::update(sf::Time dt)
 
 		ball.move(calcXYMoveComponents(dt));
 
-		std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
+		//std::cout << "Ball depth: " << zDepth << "	Scale factor is: "<< scaleFactor << std::endl;
 		
 		//if (zDepth == ARENADEPTH || zDepth == 0) {
 		//	isIdle = true;

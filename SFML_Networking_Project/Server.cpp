@@ -105,16 +105,18 @@ void Server::tick()
 		//send a packet stating the ball has changed direction
 		sf::Packet ballReversePacket;
 		ballReversePacket << static_cast<sf::Int32>(packetServer::BallReverse);
-		//send the ball xyz position and the angle it's travelling at when colliding locally
-		sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
-		float invertedBallPosX = world->window->getSize().x - ballPosition.x;
-		ballReversePacket << invertedBallPosX << ballPosition.y << ballObject->zDepth;
 
 		float invertedBallXAngle = -1 * ballObject->thetaX;
 		float ballYAngle = ballObject->thetaY;
 		ballReversePacket << invertedBallXAngle << ballYAngle;
+
+		//send the ball xyz position and the angle it's travelling at when colliding locally
+		sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
+		float invertedBallPosX = world->window->getSize().x - ballPosition.x;
+		ballReversePacket << invertedBallPosX << ballPosition.y << ballObject->zDepth;
 		sendToClient(ballReversePacket);
 		std::cout << "server send ballReverse" << std::endl;
+		std::cout << "SVTX - x:" << invertedBallPosX << " y:" << ballPosition.y << std::endl;
 		//reset flag
 		world->ballCollide = false;
 	}
@@ -180,7 +182,7 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 						float ballCollisionX, ballCollisionY;
 						packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
 						ball->setPosition(ballCollisionX, ballCollisionY);
-
+						std::cout << "SVRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
 					} break;
 
 				}

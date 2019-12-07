@@ -55,7 +55,7 @@ void Ball::update(sf::Time dt)
 		zDepth = fmin(ARENADEPTH, zDepth);
 		isBallEdgeCollide(zDepth);
 
-		float scaleFactor; 
+
 		if (isHost) {
 			scaleFactor = 1.0f - (zDepth / ARENADEPTH);
 		}

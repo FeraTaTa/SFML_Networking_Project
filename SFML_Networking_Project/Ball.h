@@ -13,7 +13,7 @@ private:
 
 	float winWidth;
 	float winHeight;
-
+	float scaleFactor;
 public:
 	bool isIdle;
 	//the current z value of the ball

@@ -78,7 +78,7 @@ void Server::executionThread()
 		}
 
 		// Sleep to prevent server from consuming 100% CPU
-		//sf::sleep(sf::milliseconds(10));
+		sf::sleep(sf::milliseconds(1));
 	}
 }
 

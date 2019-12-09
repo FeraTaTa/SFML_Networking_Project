@@ -32,7 +32,7 @@ void Server::setListening(bool enable)
 	{
 		if (!mListeningState) {
 			mListeningState = (mListenerSocket.listen(ServerPort) == sf::TcpListener::Done);
-			std::cout << "listen setup" << std::boolalpha << mListeningState << std::endl;
+			std::cout << "listener socket ready" << std::boolalpha << mListeningState << std::endl;
 		}
 	}
 	else
@@ -114,8 +114,9 @@ void Server::tick()
 		float invertedBallPosX = world->window->getSize().x - ballPosition.x;
 		ballReversePacket << invertedBallPosX << ballPosition.y << ballObject->zDepth;
 		sendToClient(ballReversePacket);
-		std::cout << "server send ballReverse" << std::endl;
-		std::cout << "SVTX - x:" << invertedBallPosX << " y:" << ballPosition.y << std::endl;
+		std::cout << std::endl << "server send ballReverse" << std::endl;
+		std::cout << "SVTX - x:" << invertedBallPosX << " y:" << ballPosition.y << " z:" << ballObject->zDepth << std::endl;
+		std::cout << "SVTX - thetaX:" << invertedBallXAngle << " thetaY:" << ballYAngle << std::endl;
 		//reset flag
 		world->ballCollide = false;
 	}
@@ -170,14 +171,15 @@ void Server::handleIncomingPacket(RemotePeer& receivingPeer)
 				case packetClient::BallReverse:
 				{
 					ballObject->toggleDirection();
-					std::cout << "server receive ballReverse" << std::endl;
+					std::cout << std::endl << "server receive ballReverse" << std::endl;
 					packet >> ballObject->thetaX >> ballObject->thetaY;
 					//receive the ball xyz position and the angle it's travelling at when colliding on the opponent side
 					sf::CircleShape* ball = ballObject->getBall();
 					float ballCollisionX, ballCollisionY;
 					packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
 					ball->setPosition(ballCollisionX, ballCollisionY);
-					std::cout << "SVRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
+					std::cout << "SVRX - x:" << ballCollisionX << " y:" << ballCollisionY << " z:" << ballObject->zDepth << std::endl;
+					std::cout << "SVRX - thetaX:" << ballObject->thetaX << " thetaY:" << ballObject->thetaY << std::endl;
 					break;
 				} 
 			}
@@ -215,7 +217,7 @@ void Server::handleIncomingConnections()
 		mPeer->socket.send(packet);
 		mPeer->ready = true;
 		mPeer->lastPacketTime = now(); // prevent initial timeouts
-
+		std::cout << "Client connected" << std::endl;
 		mConnectedPlayers++;
 		if (mConnectedPlayers >= mMaxConnectedPlayers) {
 			setListening(false);

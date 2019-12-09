@@ -35,7 +35,7 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 	case packetServer::BallReverse:
 	{
 		ballObject->toggleDirection();
-		std::cout << "client receive ballReverse" << std::endl;
+		std::cout << std::endl << "client receive ballReverse" << std::endl;
 		packet >> ballObject->thetaX >> ballObject->thetaY;
 
 		//receive the ball xyz position and the angle it's travelling at when colliding on the opponent side
@@ -43,7 +43,8 @@ void Client::handlePacket(sf::Int32 packetType, sf::Packet& packet)
 		float ballCollisionX, ballCollisionY;
 		packet >> ballCollisionX >> ballCollisionY >> ballObject->zDepth;
 		ball->setPosition(ballCollisionX, ballCollisionY);
-		std::cout << "CLRX - x:" << ballCollisionX << " y:" << ballCollisionY << std::endl;
+		std::cout << "CLRX - x:" << ballCollisionX << " y:" << ballCollisionY << " z:" << ballObject->zDepth << std::endl;
+		std::cout << "CLRX - thetaX:" << ballObject->thetaX << " thetaY:" << ballObject->thetaY << std::endl;
 
 	} break;
 	case packetServer::UpdateClientState:
@@ -115,7 +116,7 @@ void Client::update()
 				//send a packet stating the ball has changed direction
 				sf::Packet ballReversePacket;
 				ballReversePacket << static_cast<sf::Int32>(packetClient::BallReverse);
-				std::cout << "client send ballReverse" << std::endl;
+				std::cout << std::endl << "client send ballReverse" << std::endl;
 
 				float invertedBallXAngle = -1 * ballObject->thetaX;
 				float ballYAngle = ballObject->thetaY;
@@ -124,7 +125,8 @@ void Client::update()
 				sf::Vector2f ballPosition = ballObject->getBall()->getPosition();
 				float invertedBallPosX = world->window->getSize().x - ballPosition.x;
 				ballReversePacket << invertedBallPosX << ballPosition.y << ballObject->zDepth;
-				std::cout << "CLTX - x:" << invertedBallPosX << " y:" << ballPosition.y << std::endl;
+				std::cout << "CLTX - x:" << invertedBallPosX << " y:" << ballPosition.y << " z:" << ballObject->zDepth << std::endl;
+				std::cout << "CLTX - thetaX:" << invertedBallXAngle << " thetaY:" << ballYAngle << std::endl;
 				mSocket.send(ballReversePacket);
 				//reset flag
 				world->ballCollide = false;

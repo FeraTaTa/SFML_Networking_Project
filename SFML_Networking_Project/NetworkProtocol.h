@@ -26,11 +26,10 @@ namespace packetServer
 	// Packets originated in the server
 	enum PacketType
 	{
-		PlayerConnect,
-		PlayerDisconnect,
 		StartGame,
-		BallReverse,
 		UpdateClientState,
-		BallMissed
+		BallReverse,
+		BallMissed,
+		Quit
 	};
 }
